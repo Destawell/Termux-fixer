@@ -1,9 +1,10 @@
 #!/data/data/com.termux/files/usr/bin/bash
+# shellcheck disable=SC2034
 # Common utilities for Termux-Fixer
 
 set -Eeuo pipefail
 
-TF_VERSION="2.1.0"
+TF_VERSION="2.2.0"
 TF_APP_NAME="Termux-Fixer"
 
 # ---------- UI ----------
@@ -61,8 +62,13 @@ TF_LOG_DIR="${TF_LOG_DIR:-$TF_LOG_DIR_DEFAULT}"
 TF_LOG_FILE=""
 
 init_logging() {
+  # Idempotent: the menu calls this before every action.
+  if [[ -n "${TF_LOG_FILE:-}" && -f "$TF_LOG_FILE" ]]; then
+    return 0
+  fi
   mkdir -p "$TF_LOG_DIR"
   TF_LOG_FILE="$TF_LOG_DIR/termux-fixer-$(date +%Y%m%d-%H%M%S).log"
+  export TF_LOG_DIR TF_LOG_FILE
   # Mirror stdout+stderr to logfile
   exec > >(tee -a "$TF_LOG_FILE") 2>&1
 }
@@ -218,8 +224,6 @@ install_profiles() {
     err "Profile not found: $profile_file"
     return 1
   fi
-  mapfile -t pkgs < <(grep -vE '^(#|\s*$)' "$profile_file" | tr '\n' ' ')
-  # shellcheck disable=SC2206
-  local list=( ${pkgs[@]} )
-  pkg_install_list "${list[@]}"
+  mapfile -t pkgs < <(grep -vE '^(#|[[:space:]]*$)' "$profile_file")
+  pkg_install_list "${pkgs[@]}"
 }

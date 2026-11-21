@@ -10,8 +10,9 @@ chmod +x fix.sh
 ## 2) Recommended first run
 
 - **1 — Full Auto Fix** (safe defaults)
-- **4 — Install Essentials (Minimal)**
-- **7 — Diagnose & Create Report** (if anything still fails)
+- **11 — Install Essentials (Minimal)**
+- **15 — Secure remote SSH over Tailscale (free)**
+- **10 — Diagnose & Create Report** (if anything still fails)
 
 ## 3) Where logs & reports live
 
