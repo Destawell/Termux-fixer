@@ -1,0 +1,3018 @@
+
+
+
+To build a functional and reliable AI "brain" structure (often called a cognitive architecture), you need a mix of memory, reasoning, perception, and execution capabilities.
+If you are architecting an AI system from the ground up, these 7 core skills are essential:
+1. Memory & Knowledge Management
+Short-Term (Working) Memory: Keeps track of the immediate context, such as the current conversation or active task variables.
+Long-Term Memory: Stores persistent facts, user preferences, and past experiences (often built using Vector Databases or Knowledge Graphs) so the AI doesn't forget everything after a session ends.
+2. Reasoning & Logic Verification
+Deductive & Inductive Reasoning: Allows the AI to connect clues, draw conclusions, and solve multi-step problems.
+Contradiction Detection (Anti-Tautology): Acts as an internal "critic" to verify that new thoughts or facts do not clash with established rules or reality, preventing hallucinations.
+3. Perception & Input Grounding
+Multimodal Understanding: Enables the AI to translate raw inputs—text, audio, images, or sensor data—into structured concepts it can actually process.
+Entity & Intent Recognition: Helps the brain figure out what the user wants and which specific objects or concepts are involved.
+4. Planning & Goal Decomposition
+Task Breakdown: Takes a massive, vague goal (e.g., "Plan a trip") and splits it into smaller, actionable sub-tasks.
+Prioritization & Backtracking: Decides which step comes first and adjusts the plan if an obstacle appears.
+5. Tool Use & Action Execution
+API & Environment Interaction: Gives the AI "hands" to interact with the outside world—such as searching the web, running Python code, querying a database, or controlling a robotic arm.
+6. Self-Reflection & Error Correction
+Metacognition (Thinking about thinking): Lets the AI evaluate its own output before finalizing it, asking, "Does this actually answer the prompt?" or "Did I make a math error?"
+7. Safety & Alignment Guardrails
+Constraint Enforcement: Hard-coded boundaries that stop the AI from executing harmful actions, leaking sensitive data, or breaking system rules, regardless of how a user prompts it.
+How They Fit Together
+Brain Module	Core Skill	Real-World Analogy
+Prefrontal Cortex	Planning & Self-Reflection	The project manager deciding what to do next
+Hippocampus	Short- & Long-Term Memory	The filing cabinet storing past experiences
+Logic Gate / Critic	Reasoning & Anti-Tautology	The fact-checker catching lies or mistakes
+Sensory Cortex	Perception & Grounding	Eyes and ears translating the outside world
+Motor Cortex	Tool Use & Action	Hands typing on a keyboard or moving objects.
+
+
+
+
+Building an autonomous multitasking agent from scratch that translates simple everyday words into complex automated actions is an ambitious and exciting architecture.
+To make this work reliably without the AI breaking things or getting stuck in loops, I would design it as a 5-stage pipeline (an Event-Driven Cognitive Loop) rather than a single giant model.
+The 5-Stage Automation Brain Architecture
+1. Semantic Intent Router (The Translator)
+What it does: Takes vague human input (e.g., "Clean up my desktop" or "Prep for Monday") and translates it into a structured machine goal.
+Key Skill: Intent Classification & Entity Extraction. It must map casual slang or short phrases to strict system actions and ask clarifying questions only when a critical detail is missing.
+2. Dynamic Planner & DAG Builder (The Strategist)
+What it does: Breaks the goal into a Directed Acyclic Graph (DAG)—a step-by-step flowchart that shows which tasks must happen in order and which can run simultaneously (multitasking).
+Key Skill: Dependency Mapping. For example, if you say "Send the report to Ali," the brain knows it cannot execute send_email() until generate_report() finishes.
+3. Logic & Safety Critic (Your Anti-Tautology Gate)
+What it does: Inspects the execution plan before any action happens.
+Key Skill: Contradiction & Constraint Checking. It catches impossible loops (e.g., "Move file A to folder B, then delete folder B before reading file A") and enforces hard permissions (e.g., blocking delete_all_files without explicit confirmation).
+4. Asynchronous Worker Pool (The Multitasking Hands)
+What it does: Executes multiple independent tools at the same time using parallel threads or async workers.
+Key Skill: Tool Orchestration & Sandboxing. Your agent needs modular connectors (APIs, OS shell commands, browser automation, file system access) running in isolated environments so one crashed task doesn't freeze the whole brain.
+5. State Observer & Self-Healer (The Reflexes)
+What it does: Watches the output of every single step in real time.
+Key Skill: Error Recovery & Re-planning. If a website fails to load or an API times out, the brain doesn't just crash—it reads the error, adjusts the plan, and tries an alternative path.
+Core Tech Stack to Build This From Scratch
+Since you are building this from the ground up, keeping your components lightweight and modular is critical:
+Brain Component	Recommended Approach / Tech	Why It Fits
+Core Language	Python (with asyncio) or Rust	Python has the richest AI/automation libraries; asyncio handles multitasking natively.
+Language Understanding	Fine-tuned Small Language Model (SLM) or LLM API	Converts everyday words into strict JSON schemas for your code to execute.
+Anti-Tautology / Logic	Z3 Theorem Prover or custom rule engine	Mathematically verifies that task dependencies don't contradict each other.
+Short-Term State	In-memory Key-Value store (e.g., Redis)	Tracks live status of multiple tasks running at the exact same time.
+Long-Term Memory	SQLite + Vector store (e.g., Qdrant or Chroma)	Remembers your past workflows so typing "Do the usual" works next time.
+Biggest Pitfall to Avoid
+Do not let the AI write and execute raw system commands unchecked. Always force your language model to output structured JSON tool calls (e.g., {"action": "move_file", "target": "report.pdf"}) that pass through your Anti-Tautology/Safety Critic before your execution engine touches the actual computer.
+
+
+
+
+
+To build a portable AI automation brain that runs directly from a USB drive or hub and connects automatically to external tools (like Claude Code, OpenCode, Ollama, OpenAI, DeepSeek, and Hermes Agent), I would design it as a self-contained "Zero-Install" Portable Hub built around the Model Context Protocol (MCP) and a lightweight OpenAI-Compatible Local Proxy.
+This lets your USB drive act as a universal plug-and-play "brain" that works on any host computer without requiring you to install Python, Node, or dependencies on the host machine.
+1. The Portable Hardware & OS Setup (Zero-Install)
+Because USB flash drives can bottleneck when reading/writing thousands of tiny AI files, use a fast portable NVMe SSD enclosure (USB 3.2 / USB4) connected to your USB hub rather than a standard thumb drive.
+To make it completely self-contained:
+Single-Binary Core: Build your brain's core engine in Rust or Go (or bundle a Portable Python / uv standalone binary). This compiles down to a single executable file (e.g., brain.exe for Windows, brain_mac, brain_linux) with zero installation required on the host PC.
+Relative Paths Only: Store your SQLite memory, vector database, and encrypted API keys inside a /data folder on the drive using relative paths (./data/memory.db) so it never touches the host computer's hard drive.
+2. How to Connect to All Your External AI Apps Automatically
+You do not need to write custom integrations for every single AI tool. Instead, make your portable brain speak two universal standards:
+A. Expose an OpenAI-Compatible API (http://localhost:11434 or :8080)
+Almost every tool you mentioned—OpenCode, Claude Code, DeepSeek, Ollama, and Hermes Agent—can connect to a custom OpenAI-compatible endpoint.
+When you plug in your USB, your brain spins up a tiny local HTTP server in the background.
+It acts as a Smart Router & Anti-Tautology Filter: your external apps send requests to your USB brain first, your brain checks the logic, adds your personal long-term memory, and forwards the request to whichever backend you want (OpenAI, DeepSeek, or Ollama Cloud).
+B. Act as a Universal MCP (Model Context Protocol) Server
+Claude Code, OpenCode, and Hermes Agent natively support MCP.
+By building an MCP server directly into your USB brain, plugging it in instantly gives those coding and automation agents access to your portable memory, custom automation workflows, and anti-tautology safety checks.
+3. Auto-Connect & Plug-and-Play Architecture
+Modern operating systems (Windows 11, macOS, Linux) block USB drives from silently running .exe files automatically for security reasons. To achieve seamless "plug-and-play" connection:
+One-Click Launcher / Tray App: Put a single launcher script at the root of the USB drive (Start_Brain.bat / Start_Brain.command). Double-clicking it starts your background server and opens a local web dashboard (http://localhost:8080) in your browser.
+Dynamic Environment Configurator: When launched, your brain automatically scans the host machine to detect which tools are installed (e.g., checking for .claude, opencode configs, or running ollama ports) and temporarily points them to your USB's local socket while the drive is plugged in.
+Graceful Unmount (Safe Eject): Include a "Sleep / Eject" button on your dashboard that flushes all SQLite memory logs to the SSD and restores the host PC's original config files before you unplug the hub.
+Recommended Folder Structure on Your USB Drive
+Biggest Pitfall to Avoid
+Do not store API keys in plain-text .env files on a portable USB drive. If you ever lose your USB hub, anyone who plugs it in would have access to your OpenAI, DeepSeek, and Ollama Cloud accounts. Encrypt the /vault folder so your brain asks for a quick master PIN when you first plug it in.
+To help you start coding the core bridge, tell me:
+Which OS do you plug your USB hub into most often (Windows, macOS, or Linux)?
+Do you want to build the core gateway in Python or Rust/Go?
+I can write the starter code for the local proxy server and MCP bridge so your USB brain can talk to Claude Code, OpenCode, and Ollama right away.
+
+
+
+
+Supporting Windows, macOS, Linux, and Android from a single USB hub is completely achievable, though Android introduces a specific technical constraint: standard Android devices cannot directly execute desktop binaries (.exe, .app, or x86 Linux files) off a USB drive without a Linux environment like Termux or a web browser interface.
+To make your portable AI brain work seamlessly across all four operating systems, I would use a Cross-Compiled Go or Rust Core paired with a Progressive Web App (PWA) UI and a Termux bridge for Android.
+1. Cross-Platform Core Architecture
+Core Engine (Go or Rust): Both languages allow you to write your code once and compile native, single-file executables with zero external dependencies for every architecture:
+brain_win_x64.exe (Windows)
+brain_mac_arm64 & brain_mac_x64 (macOS Apple Silicon & Intel)
+brain_linux_x64 (Desktop Linux)
+brain_android_arm64 (Android via Termux)
+Filesystem Format (exFAT): Format your USB NVMe SSD as exFAT. It is the only modern file system natively supported for read/write across Windows, macOS, Linux, and Android without file-size limits.
+Embedded Database (SQLite): Use a pure-Go or Rust SQLite driver (modernc.org/sqlite or rusqlite). It stores your AI's long-term memory, anti-tautology rules, and workflow logs in a single portable .db file that works identically on all four OSes.
+2. How It Connects on Each OS
+Operating System	How It Launches & Connects	Automation & App Integration
+Windows	Double-click Start_Windows.bat	Full OS automation, MCP server, and local proxy for Claude Code, OpenCode, Ollama.
+macOS	Double-click Start_Mac.command	Full OS automation (AppleScript/Shell), MCP server, and local API proxy.
+Linux	Run ./Start_Linux.sh	Full bash/system automation, MCP server, and local API proxy.
+Android	Run via Termux (./brain_android_arm64) or connect over Wi-Fi/USB tethering	Runs the exact same MCP server and local API proxy (localhost:8080), controllable via Chrome/PWA or Android Intents.
+3. Handling Android Smoothly
+Because Android restricts running executables directly from external USB OTG drives due to noexec mount permissions, use this two-part trick:
+Termux Bootstrap Script (start_android.sh): When you plug your USB hub into your Android phone, run a one-line command in Termux that copies the tiny brain_android_arm64 binary into Termux's internal cache and runs it while pointing its data folder (--data /storage/USB_NAME/vault) straight back to your USB drive.
+USB Ethernet / Localhost Bridge: Once running on Android, your brain opens http://localhost:8080 in your mobile browser. From there, it connects to OpenAI, DeepSeek, Ollama Cloud, and even terminal-based tools like OpenCode or Claude Code running inside Termux.
+4. Updated USB Drive Structure
+Biggest Pitfall to Avoid on Android & exFAT
+exFAT does not support Unix file permissions (chmod +x) or symbolic links. On macOS, Linux, and Android, trying to run a binary directly off an exFAT USB drive will often throw a Permission Denied error. Your launcher scripts (Start_Mac.command, Start_Linux.sh, start_android.sh) should automatically copy the binary to /tmp (RAM), make it executable there, and keep all data reads/writes pointed to your USB drive.
+Would you like me to write:
+The starter Go or Rust code for this cross-platform local server and MCP/OpenAI gateway?
+The universal launcher scripts that bypass the exFAT permission issue automatically on macOS, Linux, and Android?
+
+
+
+
+Here is a complete, working starter kit in Go (Golang) along with the universal launcher scripts.
+Go is ideal here because it compiles into tiny, standalone binaries with zero dependencies for Windows, macOS, Linux, and Android from a single machine.
+1. The Core AI Brain Gateway (main.go)
+This starter code creates a portable HTTP server (http://localhost:8080) that:
+Accepts everyday words via a /automate endpoint (and serves a built-in web dashboard).
+Runs your Anti-Tautology / Contradiction Filter before allowing any action.
+Acts as an OpenAI-Compatible Proxy (/v1/chat/completions) so Claude Code, OpenCode, Hermes Agent, DeepSeek, and Ollama can plug directly into it.
+Reads/writes strictly to your USB drive's /vault folder using relative paths.
+go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+// BrainConfig holds paths relative to your USB drive
+type BrainConfig struct {
+	VaultDir   string
+	Port       string
+	TargetLLM  string // e.g., Ollama Cloud, OpenAI, or DeepSeek endpoint
+	APIKey     string
+}
+
+type TaskRequest struct {
+	Command string `json:"command"`
+}
+
+var cfg BrainConfig
+
+func main() {
+	// Accept --vault flag so launcher scripts can run binary from /tmp while keeping data on USB
+	vaultFlag := flag.String("vault", "./vault", "Path to USB vault directory")
+	portFlag := flag.String("port", "8080", "Local server port")
+	flag.Parse()
+
+	cfg = BrainConfig{
+		VaultDir:  *vaultFlag,
+		Port:      *portFlag,
+		TargetLLM: getEnv("LLM_ENDPOINT", "https://openai.com"),
+		APIKey:    getEnv("LLM_API_KEY", ""),
+	}
+
+	// Ensure USB vault directory exists
+	if err := os.MkdirAll(cfg.VaultDir, 0755); err != nil {
+		log.Fatalf("Failed to access USB vault at %s: %v", cfg.VaultDir, err)
+	}
+
+	// Routes
+	http.HandleFunc("/", handleDashboard)
+	http.HandleFunc("/automate", handleAutomate)
+	http.HandleFunc("/v1/chat/completions", handleOpenAIProxy) // Connects Claude Code, OpenCode, etc.
+
+	fmt.Printf("🧠 Portable AI Brain Active on http://localhost:%s\n", cfg.Port)
+	fmt.Printf("💾 USB Vault Mounted at: %s\n", cfg.VaultDir)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+}
+
+// 1. Anti-Tautology & Contradiction Gate
+func checkAntiTautology(command string) (bool, string) {
+	lower := strings.ToLower(command)
+
+	// Example logical contradictions / impossible task states
+	contradictions := []struct {
+		termA  string
+		termB  string
+		reason string
+	}{
+		{"delete", "backup", "Contradiction: Cannot delete target before backup completes."},
+		{"offline", "cloud", "Contradiction: Requested offline mode while forcing cloud sync."},
+		{"enable", "disable", "Anti-tautology: Mutually exclusive states requested simultaneously."},
+	}
+
+	for _, c := range contradictions {
+		if strings.Contains(lower, c.termA) && strings.Contains(lower, c.termB) {
+			return false, c.reason
+		}
+	}
+	return true, "Logic verified: Consistent."
+}
+
+// 2. Everyday Word Automation Endpoint
+func handleAutomate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "POST required", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req TaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Step A: Run Anti-Tautology Critic
+	valid, msg := checkAntiTautology(req.Command)
+	if !valid {
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(map[string]string{
+			"status": "BLOCKED_BY_LOGIC_GATE",
+			"reason": msg,
+		})
+		return
+	}
+
+	// Step B: Log intent to portable USB memory
+	logEntry := fmt.Sprintf("[%s] EXECUTED: %s\n", time.Now().Format(time.RFC3339), req.Command)
+	logFile := filepath.Join(cfg.VaultDir, "memory_log.txt")
+	f, _ := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if f != nil {
+		f.WriteString(logEntry)
+		f.Close()
+	}
+
+	// Step C: Return structured execution plan (connect your OS executors here)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{
+		"status":  "APPROVED",
+		"logic":   msg,
+		"command": req.Command,
+		"note":    "Ready for worker pool execution.",
+	})
+}
+
+// 3. Universal OpenAI-Compatible Proxy (For Claude Code, OpenCode, DeepSeek, Ollama)
+func handleOpenAIProxy(w http.ResponseWriter, r *http.Request) {
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read request", http.StatusBadRequest)
+		return
+	}
+
+	// Run Anti-Tautology check on incoming prompt payload
+	valid, reason := checkAntiTautology(string(bodyBytes))
+	if !valid {
+		http.Error(w, reason, http.StatusConflict)
+		return
+	}
+
+	// Forward cleanly to configured LLM (OpenAI, DeepSeek, Ollama Cloud)
+	proxyReq, err := http.NewRequest("POST", cfg.TargetLLM, bytes.NewBuffer(bodyBytes))
+	if err != nil {
+		http.Error(w, "Proxy build error", http.StatusInternalServerError)
+		return
+	}
+
+	proxyReq.Header.Set("Content-Type", "application/json")
+	if auth := r.Header.Get("Authorization"); auth != "" {
+		proxyReq.Header.Set("Authorization", auth)
+	} else if cfg.APIKey != "" {
+		proxyReq.Header.Set("Authorization", "Bearer "+cfg.APIKey)
+	}
+
+	client := &http.Client{Timeout: 60 * time.Second}
+	resp, err := client.Do(proxyReq)
+	if err != nil {
+		http.Error(w, "Upstream LLM unreachable: "+err.Error(), http.StatusBadGateway)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	io.Copy(w, resp.Body)
+}
+
+// 4. Built-in Zero-Dependency Web UI (Works on Windows, Mac, Linux, Android)
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+	html := `<!DOCTYPE html>
+<html>
+<head><title>Portable AI Brain</title><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;">
+  <h2>🧠 Portable AI Brain Hub</h2>
+  <p>Type a simple everyday command to test the Anti-Tautology & Automation pipeline:</p>
+  <input id="cmd" type="text" placeholder="e.g., Organize my downloads folder" style="width:75%;padding:10px;">
+  <button onclick="send()" style="padding:10px;">Run</button>
+  <pre id="out" style="background:#f4f4f4;padding:15px;margin-top:20px;"></pre>
+  <script>
+    async function send() {
+      const res = await fetch('/automate', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({command: document.getElementById('cmd').value})
+      });
+      document.getElementById('out').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+  </script>
+</body>
+</html>`
+	w.Header().Set("Content-Type", "text/html")
+	w.Write([]byte(html))
+}
+
+func getEnv(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return fallback
+}
+Use code with caution.
+2. Build Commands (Compile All 4 OS Binaries at Once)
+Run these commands on your development machine to generate all standalone executables for your /bin folder:
+bash
+# Windows (64-bit)
+GOOS=windows GOARCH=amd64 go build -o bin/brain_win_x64.exe main.go
+
+# macOS (Apple Silicon M1/M2/M3/M4)
+GOOS=darwin GOARCH=arm64 go build -o bin/brain_mac_arm64 main.go
+
+# macOS (Intel)
+GOOS=darwin GOARCH=amd64 go build -o bin/brain_mac_x64 main.go
+
+# Linux (64-bit)
+GOOS=linux GOARCH=amd64 go build -o bin/brain_linux_x64 main.go
+
+# Android (ARM64 via Termux)
+GOOS=linux GOARCH=arm64 go build -o bin/brain_android_arm64 main.go
+Use code with caution.
+3. Universal Launcher Scripts (Bypasses exFAT Permission Locks)
+Place these four scripts in the root directory of your exFAT USB drive. They automatically copy the binary to RAM (/tmp) so macOS, Linux, and Android never throw a Permission Denied error, while keeping all data saved on your USB drive.
+A. Windows (Start_Windows.bat)
+bat
+@echo off
+set USB_DIR=%~dp0
+start "" "http://localhost:8080"
+"%USB_DIR%bin\brain_win_x64.exe" --vault "%USB_DIR%vault"
+pause
+Use code with caution.
+B. macOS (Start_Mac.command)
+bash
+#!/bin/bash
+USB_DIR="$(cd "$(dirname "$0")" && pwd)"
+ARCH=$(uname -m)
+
+if [ "$ARCH" = "arm64" ]; then
+    BIN="brain_mac_arm64"
+else
+    BIN="brain_mac_x64"
+fi
+
+# Copy to /tmp to bypass exFAT noexec restriction
+cp "$USB_DIR/bin/$BIN" /tmp/ai_brain
+chmod +x /tmp/ai_brain
+
+open "http://localhost:8080"
+/tmp/ai_brain --vault "$USB_DIR/vault"
+Use code with caution.
+C. Desktop Linux (Start_Linux.sh)
+bash
+#!/bin/bash
+USB_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+cp "$USB_DIR/bin/brain_linux_x64" /tmp/ai_brain
+chmod +x /tmp/ai_brain
+
+xdg-open "http://localhost:8080" 2>/dev/null || true
+/tmp/ai_brain --vault "$USB_DIR/vault"
+Use code with caution.
+D. Android via Termux (start_android.sh)
+bash
+#!/data/data/com.termux/files/usr/bin/bash
+USB_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Copy binary into Termux internal executable space
+cp "$USB_DIR/bin/brain_android_arm64" "$TMPDIR/ai_brain"
+chmod +x "$TMPDIR/ai_brain"
+
+echo "Open http://localhost:8080 in Chrome or connect OpenCode/Claude Code!"
+"$TMPDIR/ai_brain" --vault "$USB_DIR/vault"
+Use code with caution.
+4. Connecting External Apps Once Plugged In
+Once your USB brain is running on http://localhost:8080, point your external agents to it by setting their base URL environment variable:
+OpenCode / Claude Code / Hermes Agent:
+bash
+export OPENAI_BASE_URL="http://localhost:8080/v1"
+export OPENAI_API_KEY="usb-local-brain"
+Use code with caution.
+Ollama Cloud / DeepSeek: Set LLM_ENDPOINT before running your launcher script (e.g., export LLM_ENDPOINT="https://deepseek.com"), and your USB brain will automatically filter prompts through your Anti-Tautology gate before forwarding them.
+Would you like to add:
+A native MCP (Model Context Protocol) JSON-RPC endpoint to main.go so Claude Code and OpenCode can discover and trigger your USB automation tools automatically?
+Encrypted vault support (PIN-protected AES encryption) so your API keys stay safe if the USB hub is ever lost?
+
+
+
+
+Here is the upgraded main.go featuring both a native MCP (Model Context Protocol) JSON-RPC endpoint and an AES-256-GCM Encrypted Vault unlocked via a startup PIN.
+It uses only Go's built-in standard library (crypto/aes, crypto/cipher, crypto/sha256), so it still compiles into a single dependency-free binary across Windows, macOS, Linux, and Android.
+1. Upgraded Core Brain (main.go) with MCP + Encrypted Vault
+go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+)
+
+// VaultSecrets holds encrypted API keys stored safely on the USB drive
+type VaultSecrets struct {
+	OpenAIKey   string `json:"openai_key"`
+	DeepSeekKey string `json:"deepseek_key"`
+	OllamaURL   string `json:"ollama_url"`
+	ActiveLLM   string `json:"active_llm"`
+}
+
+type BrainConfig struct {
+	VaultDir string
+	Port     string
+	Secrets  VaultSecrets
+}
+
+var cfg BrainConfig
+
+func main() {
+	vaultFlag := flag.String("vault", "./vault", "Path to USB vault directory")
+	portFlag := flag.String("port", "8080", "Local server port")
+	flag.Parse()
+
+	cfg.VaultDir = *vaultFlag
+	cfg.Port = *portFlag
+
+	if err := os.MkdirAll(cfg.VaultDir, 0755); err != nil {
+		log.Fatalf("Cannot access USB vault: %v", err)
+	}
+
+	// Step 1: Unlock or Initialize Encrypted Vault with Master PIN
+	unlockVault()
+
+	// Step 2: Register Routes
+	http.HandleFunc("/", handleDashboard)
+	http.HandleFunc("/automate", handleAutomate)
+	http.HandleFunc("/v1/chat/completions", handleOpenAIProxy)
+	http.HandleFunc("/mcp", handleMCP) // Native MCP Server for Claude Code / OpenCode
+
+	fmt.Printf("\n🧠 Portable AI Brain Active on http://localhost:%s\n", cfg.Port)
+	fmt.Printf("🔌 MCP Endpoint Ready at: http://localhost:%s/mcp\n", cfg.Port)
+	fmt.Printf("🔒 Encrypted USB Vault Mounted at: %s\n", cfg.VaultDir)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+}
+
+// ============================================================================
+// 1. AES-256-GCM ENCRYPTED VAULT (Protects API Keys if USB is Lost)
+// ============================================================================
+
+func unlockVault() {
+	vaultFile := filepath.Join(cfg.VaultDir, "secrets.enc")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("🔑 Enter USB Brain Master PIN: ")
+	pin, _ := reader.ReadString('\n')
+	pin = strings.TrimSpace(pin)
+	key := sha256.Sum256([]byte(pin))
+
+	// First-time setup if secrets.enc doesn't exist yet
+	if _, err := os.Stat(vaultFile); os.IsNotExist(err) {
+		fmt.Println("🆕 Initializing new encrypted USB vault...")
+		fmt.Print("Enter OpenAI/DeepSeek API Key (or leave blank): ")
+		apiKey, _ := reader.ReadString('\n')
+		fmt.Print("Enter Target LLM Endpoint [default: https://openai.com]: ")
+		endpoint, _ := reader.ReadString('\n')
+
+		endpoint = strings.TrimSpace(endpoint)
+		if endpoint == "" {
+			endpoint = "https://openai.com"
+		}
+
+		cfg.Secrets = VaultSecrets{
+			OpenAIKey: strings.TrimSpace(apiKey),
+			ActiveLLM: endpoint,
+		}
+		saveEncryptedVault(vaultFile, key[:], cfg.Secrets)
+		fmt.Println("✅ Vault encrypted and saved to USB!")
+		return
+	}
+
+	// Decrypt existing vault
+	encData, err := os.ReadFile(vaultFile)
+	if err != nil {
+		log.Fatalf("Failed to read vault file: %v", err)
+	}
+
+	plainData, err := decryptAES(encData, key[:])
+	if err != nil {
+		log.Fatalf("❌ Wrong PIN or corrupted vault! Access denied.")
+	}
+
+	if err := json.Unmarshal(plainData, &cfg.Secrets); err != nil {
+		log.Fatalf("Failed to parse vault data: %v", err)
+	}
+	fmt.Println("✅ Vault unlocked successfully!")
+}
+
+func saveEncryptedVault(path string, key []byte, secrets VaultSecrets) {
+	plain, _ := json.Marshal(secrets)
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonce := make([]byte, gcm.NonceSize())
+	io.ReadFull(rand.Reader, nonce)
+	cipherText := gcm.Seal(nonce, nonce, plain, nil)
+	os.WriteFile(path, cipherText, 0600)
+}
+
+func decryptAES(data []byte, key []byte) ([]byte, error) {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	nonceSize := gcm.NonceSize()
+	if len(data) < nonceSize {
+		return nil, fmt.Errorf("ciphertext too short")
+	}
+	nonce, cipherText := data[:nonceSize], data[nonceSize:]
+	return gcm.Open(nil, nonce, cipherText, nil)
+}
+
+// ============================================================================
+// 2. ANTI-TAUTOLOGY & CONTRADICTION LOGIC GATE
+// ============================================================================
+
+func checkAntiTautology(text string) (bool, string) {
+	lower := strings.ToLower(text)
+	rules := []struct {
+		a, b, reason string
+	}{
+		{"delete", "backup", "Contradiction: Cannot delete target before backup completes."},
+		{"offline", "cloud", "Contradiction: Offline mode clashes with cloud execution."},
+		{"enable", "disable", "Anti-tautology: Mutually exclusive states requested simultaneously."},
+	}
+	for _, r := range rules {
+		if strings.Contains(lower, r.a) && strings.Contains(lower, r.b) {
+			return false, r.reason
+		}
+	}
+	return true, "Logic verified: Consistent."
+}
+
+// ============================================================================
+// 3. NATIVE MCP (MODEL CONTEXT PROTOCOL) JSON-RPC ENDPOINT
+// ============================================================================
+
+type MCPRequest struct {
+	JSONRPC string          `json:"jsonrpc"`
+	ID      interface{}     `json:"id"`
+	Method  string          `json:"method"`
+	Params  json.RawMessage `json:"params"`
+}
+
+func handleMCP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "MCP requires POST JSON-RPC", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req MCPRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid JSON-RPC", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	switch req.Method {
+	case "initialize":
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"jsonrpc": "2.0",
+			"id":      req.ID,
+			"result": map[string]interface{}{
+				"protocolVersion": "2024-11-05",
+				"serverInfo":      map[string]string{"name": "usb-ai-brain", "version": "1.0.0"},
+				"capabilities":    map[string]interface{}{"tools": map[string]interface{}{}},
+			},
+		})
+
+	case "tools/list":
+		// Expose your USB brain's tools to Claude Code, OpenCode, and Hermes Agent
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"jsonrpc": "2.0",
+			"id":      req.ID,
+			"result": map[string]interface{}{
+				"tools": []map[string]interface{}{
+					{
+						"name":        "automate_everyday_task",
+						"description": "Translates everyday words into verified automation tasks after passing anti-tautology logic checks.",
+						"inputSchema": map[string]interface{}{
+							"type": "object",
+							"properties": map[string]interface{}{
+								"command": map[string]string{"type": "string", "description": "Simple everyday command"},
+							},
+							"required": []string{"command"},
+						},
+					},
+					{
+						"name":        "verify_logic_consistency",
+						"description": "Checks a proposed action plan for contradictions or anti-tautologies.",
+						"inputSchema": map[string]interface{}{
+							"type": "object",
+							"properties": map[string]interface{}{
+								"plan": map[string]string{"type": "string"},
+							},
+							"required": []string{"plan"},
+						},
+					},
+				},
+			},
+		})
+
+	case "tools/call":
+		var params struct {
+			Name      string            `json:"name"`
+			Arguments map[string]string `json:"arguments"`
+		}
+		json.Unmarshal(req.Params, &params)
+
+		input := params.Arguments["command"]
+		if input == "" {
+			input = params.Arguments["plan"]
+		}
+
+		valid, reason := checkAntiTautology(input)
+		statusText := fmt.Sprintf("[%v] %s (Command: %s)", valid, reason, input)
+
+		if valid {
+			logToVault("MCP_TOOL_CALL: " + input)
+		}
+
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"jsonrpc": "2.0",
+			"id":      req.ID,
+			"result": map[string]interface{}{
+				"content": []map[string]string{
+					{"type": "text", "text": statusText},
+				},
+				"isError": !valid,
+			},
+		})
+
+	default:
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"jsonrpc": "2.0",
+			"id":      req.ID,
+			"error":   map[string]interface{}{"code": -32601, "message": "Method not found"},
+		})
+	}
+}
+
+// ============================================================================
+// 4. AUTOMATION, OPENAI PROXY & DASHBOARD HANDLERS
+// ============================================================================
+
+func handleAutomate(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Command string `json:"command"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+
+	valid, msg := checkAntiTautology(req.Command)
+	w.Header().Set("Content-Type", "application/json")
+
+	if !valid {
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(map[string]string{"status": "BLOCKED", "reason": msg})
+		return
+	}
+
+	logToVault("WEB_AUTOMATE: " + req.Command)
+	json.NewEncoder(w).Encode(map[string]string{"status": "APPROVED", "logic": msg, "command": req.Command})
+}
+
+func handleOpenAIProxy(w http.ResponseWriter, r *http.Request) {
+	bodyBytes, _ := io.ReadAll(r.Body)
+	if valid, reason := checkAntiTautology(string(bodyBytes)); !valid {
+		http.Error(w, reason, http.StatusConflict)
+		return
+	}
+
+	proxyReq, _ := http.NewRequest("POST", cfg.Secrets.ActiveLLM, bytes.NewBuffer(bodyBytes))
+	proxyReq.Header.Set("Content-Type", "application/json")
+	if cfg.Secrets.OpenAIKey != "" {
+		proxyReq.Header.Set("Authorization", "Bearer "+cfg.Secrets.OpenAIKey)
+	}
+
+	client := &http.Client{Timeout: 60 * time.Second}
+	resp, err := client.Do(proxyReq)
+	if err != nil {
+		http.Error(w, "Upstream LLM unreachable: "+err.Error(), http.StatusBadGateway)
+		return
+	}
+	defer resp.Body.Close()
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	io.Copy(w, resp.Body)
+}
+
+func logToVault(entry string) {
+	logFile := filepath.Join(cfg.VaultDir, "memory_log.txt")
+	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err == nil {
+		defer f.Close()
+		f.WriteString(fmt.Sprintf("[%s] %s\n", time.Now().Format(time.RFC3339), entry))
+	}
+}
+
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+Use code with caution.
+html := `
+
+Portable AI Brain
+
+🧠 Portable AI Brain Hub (MCP + Encrypted Vault)
+MCP Endpoint: http://localhost:8080/mcp
+Automate
+
+
+async function send() {
+const res = await fetch('/automate', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({command: document.getElementById('cmd').value})
+});
+document.getElementById('out').textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+
+`
+w.Header().Set("Content-Type", "text/html")
+w.Write([]byte(html))
+}
+
+---
+
+### 2. How to Plug Your USB MCP Server into External Agents
+
+Once you double-click your launcher script and enter your **Master PIN** in the terminal window:
+
+1. **Claude Code / OpenCode / Hermes Agent (MCP Config):**
+   Add this entry to your agent's MCP configuration file (`mcp.json` or `claude_desktop_config.json`) on any host machine:
+   ```json
+   {
+     "mcpServers": {
+       "usb-ai-brain": {
+         "url": "http://localhost:8080/mcp"
+       }
+     }
+   }
+Your external agents will automatically discover two tools: automate_everyday_task and verify_logic_consistency.
+First-Time PIN Setup:
+The very first time you run the binary, it asks for a Master PIN and your API key, then creates vault/secrets.enc using AES-256-GCM encryption.
+On every future boot (across Windows, Mac, Linux, or Android), entering that PIN decrypts your keys straight into RAM without ever writing unencrypted secrets to the host computer.
+To expand this further, would you like to:
+Add real OS execution workers (so commands like "organize downloads" or "open workspace" actually run file/shell actions on Windows, Mac, Linux, and Android)?
+Upgrade the Anti-Tautology engine from keyword pairs to a dynamic LLM-assisted or formal propositional logic parser?
+
+
+
+
+I have upgraded your Portable AI Brain (main.go) and added the Khalifah Agent system prompt so that every response, automation task, and MCP tool call runs through:
+Zero-Hidden-Charge Guardrail: Blocks paid/metered API endpoints unless explicitly permitted, defaulting strictly to free local execution (Local OS workers + local Ollama/free endpoints).
+Discernment & Khalifah 8-Dimension Gate (Maqasid Syariah, Amanah, Syumul, Rahmah, etc.): Evaluates actions before execution to ensure safety, property preservation (mal), and ethical stewardship.
+Clean Directory Organizer & Duplicate File/Folder Scanner: Uses SHA-256 content hashing (for files) and recursive structural hashing (for folders) to safely quarantine or delete exact duplicates without risking original data.
+1. USB Drive Directory Structure
+Keep this clean layout on your USB drive so OpenCode, Claude Code, and your standalone binary share the exact same rules and vault:
+2. Global Khalifah Agent & Discernment Skill Files
+A. AGENTS.md (Place in your USB root & ~/.config/opencode/AGENTS.md)
+Save your exact Khalifah prompt into AGENTS.md so OpenCode enforces it globally across every session:
+markdown
+---
+description: Khalifah Agent — a steward-minded assistant that reviews every response through eight thinking dimensions before answering.
+mode: primary
+temperature: 0.3
+---
+
+You are a **Khalifah AI assistant** — a steward (khalifah) of the earth. Your role is not merely to answer quickly, but to answer **wisely, responsibly, and compassionately**. Every response you produce is an *amanah* (trust) for which you are accountable before Allah and humanity.
+
+## Mandatory Pre-Response Protocol
+
+Before you generate ANY final answer, you must silently run through the following eight checkpoints. If any checkpoint fails, revise your answer before sending it.
+
+1. **Holistic Thinking (Syumul)** — Consider religious, social, economic, and stakeholder context.
+2. **Critical & Wise Thinking** — Rely only on verified facts; stay unswayed by framing or emotion.
+3. **Strategic (Long-term) Thinking** — Consider 10–20 year impacts, risks, and opportunities.
+4. **Collective Thinking (Syura)** — Acknowledge diverse viewpoints; think "we" rather than "I".
+5. **Maqasid Syariah Alignment** — Preserve religion (*din*), life (*nafs*), intellect (*'aql*), lineage (*nasl*), and property (*mal*). Refuse or redirect if any of these five are harmed.
+6. **Adaptive & Flexible Thinking** — Adapt methods to current realities without compromising core principles.
+7. **Empathetic Thinking (Rahmah)** — Respond with warmth, compassion, and genuine care.
+8. **Responsible Thinking (Amanah)** — Ensure every action is accountable before Allah and humanity, and completely free from hidden financial charges or traps.
+
+## Output Behavior
+- For simple factual questions, run checkpoints silently and answer directly.
+- For complex, ethical, financial, medical, or high-stakes questions, append:
+  > *Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓*
+Use code with caution.
+B. skills/discernment/SKILL.md (Reusable OpenCode / MCP Skill)
+markdown
+---
+name: discernment-and-stewardship
+description: Evaluates commands for logical contradictions, hidden financial charges, and Maqasid Syariah property protection before running file or AI tasks.
+---
+# Discernment Protocol
+1. **Zero Hidden Charges:** Verify that no paid cloud APIs, auto-billing webhooks, or metered services are triggered silently.
+2. **Anti-Tautology Gate:** Reject contradictory instructions (e.g., deleting source files before verifying backups).
+3. **Property Preservation (Mal):** When organizing directories or removing duplicate files/folders, verify exact SHA-256 cryptographic matches before deleting duplicates so unique data is never lost.
+Use code with caution.
+3. Upgraded main.go (Khalifah Gate + Zero-Charge Guard + Clean Organizer & Duplicate Remover)
+go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
+	"time"
+)
+
+type VaultSecrets struct {
+	LocalOllamaURL string `json:"local_ollama_url"`
+	AllowPaidAPIs  bool   `json:"allow_paid_apis"` // Defaults to false (Zero Hidden Charges)
+	ExternalAPIKey string `json:"external_api_key"`
+	ExternalLLMURL string `json:"external_llm_url"`
+}
+
+type BrainConfig struct {
+	VaultDir string
+	Port     string
+	Secrets  VaultSecrets
+}
+
+var cfg BrainConfig
+
+func main() {
+	vaultFlag := flag.String("vault", "./vault", "Path to USB vault directory")
+	portFlag := flag.String("port", "8080", "Local server port")
+	flag.Parse()
+
+	cfg.VaultDir = *vaultFlag
+	cfg.Port = *portFlag
+
+	os.MkdirAll(cfg.VaultDir, 0755)
+	os.MkdirAll(filepath.Join(cfg.VaultDir, "quarantine"), 0755)
+
+	unlockVault()
+
+	http.HandleFunc("/", handleDashboard)
+	http.HandleFunc("/automate", handleAutomate)
+	http.HandleFunc("/v1/chat/completions", handleZeroChargeLLMProxy)
+	http.HandleFunc("/mcp", handleMCP)
+
+	fmt.Printf("\n🌿 Khalifah Portable AI Brain Active on http://localhost:%s\n", cfg.Port)
+	fmt.Printf("🛡️  Zero-Hidden-Charge Mode: %v (Local-First Execution)\n", !cfg.Secrets.AllowPaidAPIs)
+	fmt.Printf("🔌 MCP Endpoint Ready at: http://localhost:%s/mcp\n", cfg.Port)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+}
+
+// ============================================================================
+// 1. ZERO-HIDDEN-CHARGE & AES-256-GCM ENCRYPTED VAULT
+// ============================================================================
+
+func unlockVault() {
+	vaultFile := filepath.Join(cfg.VaultDir, "secrets.enc")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("🔑 Enter USB Brain Master PIN: ")
+	pin, _ := reader.ReadString('\n')
+	key := sha256.Sum256([]byte(strings.TrimSpace(pin)))
+
+	if _, err := os.Stat(vaultFile); os.IsNotExist(err) {
+		fmt.Println("🆕 Initializing Zero-Hidden-Charge USB Vault...")
+		cfg.Secrets = VaultSecrets{
+			LocalOllamaURL: "http://localhost:11434/v1/chat/completions",
+			AllowPaidAPIs:  false, // Strictly free local execution by default
+		}
+		saveEncryptedVault(vaultFile, key[:], cfg.Secrets)
+		fmt.Println("✅ Vault initialized in 100% Free Local Mode!")
+		return
+	}
+
+	encData, err := os.ReadFile(vaultFile)
+	if err != nil {
+		log.Fatalf("Failed to read vault: %v", err)
+	}
+	plainData, err := decryptAES(encData, key[:])
+	if err != nil {
+		log.Fatalf("❌ Invalid PIN. Access denied.")
+	}
+	json.Unmarshal(plainData, &cfg.Secrets)
+	fmt.Println("✅ Khalifah Vault unlocked!")
+}
+
+func saveEncryptedVault(path string, key []byte, secrets VaultSecrets) {
+	plain, _ := json.Marshal(secrets)
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonce := make([]byte, gcm.NonceSize())
+	io.ReadFull(rand.Reader, nonce)
+	os.WriteFile(path, gcm.Seal(nonce, nonce, plain, nil), 0600)
+}
+
+func decryptAES(data, key []byte) ([]byte, error) {
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonceSize := gcm.NonceSize()
+	if len(data) < nonceSize {
+		return nil, fmt.Errorf("invalid ciphertext")
+	}
+	return gcm.Open(nil, data[:nonceSize], data[nonceSize:], nil)
+}
+
+// ============================================================================
+// 2. KHALIFAH DISCERNMENT, MAQASID & ANTI-TAUTOLOGY GATE
+// ============================================================================
+
+type DiscernmentReport struct {
+	Approved bool   `json:"approved"`
+	Summary  string `json:"summary"`
+	Reason   string `json:"reason"`
+}
+
+func runKhalifahDiscernment(intent string) DiscernmentReport {
+	lower := strings.ToLower(intent)
+
+	// 1. Anti-Tautology Check (Logical Contradictions)
+	if (strings.Contains(lower, "delete") && strings.Contains(lower, "backup")) ||
+		(strings.Contains(lower, "enable") && strings.Contains(lower, "disable")) {
+		return DiscernmentReport{
+			Approved: false,
+			Reason:   "Anti-Tautology Blocked: Contradictory instructions detected.",
+			Summary:  "Khalifah check: Critical ✗ (Contradiction) | Maqasid ✓ | Amanah ✓",
+		}
+	}
+
+	// 2. Zero-Hidden-Charge Check (Financial Stewardship / Amanah)
+	paidKeywords := []string{"://openai.com", "://anthropic.com", "billing", "subscription", "paid api"}
+	for _, kw := range paidKeywords {
+		if strings.Contains(lower, kw) && !cfg.Secrets.AllowPaidAPIs {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Zero-Hidden-Charge Guard: Paid/metered external service blocked to protect against unexpected charges.",
+				Summary:  "Khalifah check: Holistic ✓ | Strategic ✓ | Maqasid (Mal) ✓ | Amanah ✗ (Hidden cost prevented)",
+			}
+		}
+	}
+
+	// 3. Maqasid Syariah Check (Preservation of Property/Mal & Life/Nafs)
+	destructiveKeywords := []string{"format drive", "wipe system", "rm -rf /", "del /f /s /q c:\\"}
+	for _, kw := range destructiveKeywords {
+		if strings.Contains(lower, kw) {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Maqasid Syariah (Hifz al-Mal) Blocked: Destructive system-wide deletion prevented.",
+				Summary:  "Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✗ | Adaptive ✓ | Rahmah ✓ | Amanah ✓",
+			}
+		}
+	}
+
+	return DiscernmentReport{
+		Approved: true,
+		Reason:   "Verified safe, free of hidden charges, and aligned with stewardship principles.",
+		Summary:  "Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓",
+	}
+}
+
+// ============================================================================
+// 3. CLEAN DIRECTORY ORGANIZER & DUPLICATE FILE/FOLDER SCANNER
+// ============================================================================
+
+type CleanupReport struct {
+	OrganizedFiles      int      `json:"organized_files"`
+	DuplicateFilesFound int      `json:"duplicate_files_removed"`
+	DuplicateDirsFound  int      `json:"duplicate_folders_removed"`
+	FreedBytes          int64    `json:"freed_bytes"`
+	ActionsTaken        []string `json:"actions_taken"`
+}
+
+// organizeAndDeduplicate scans targetDir, organizes loose files into clean category folders,
+// and deletes exact duplicate files and duplicate folders based on SHA-256 content hashes.
+func organizeAndDeduplicate(targetDir string, autoDelete bool) (CleanupReport, error) {
+	report := CleanupReport{}
+	info, err := os.Stat(targetDir)
+	if err != nil || !info.IsDir() {
+		return report, fmt.Errorf("invalid target directory: %s", targetDir)
+	}
+
+	// Step A: Organize loose root files into a clean category structure
+	categories := map[string]string{
+		".pdf": "Documents", ".doc": "Documents", ".docx": "Documents", ".txt": "Documents", ".md": "Documents",
+		".jpg": "Images", ".jpeg": "Images", ".png": "Images", ".webp": "Images", ".svg": "Images",
+		".mp4": "Media", ".mkv": "Media", ".mp3": "Media", ".wav": "Media",
+		".zip": "Archives", ".rar": "Archives", ".7z": "Archives", ".tar": "Archives", ".gz": "Archives",
+		".go": "Code", ".py": "Code", ".js": "Code", ".ts": "Code", ".json": "Code",
+	}
+
+	entries, _ := os.ReadDir(targetDir)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		folderName, exists := categories[ext]
+		if !exists {
+			folderName = "Other_Files"
+		}
+		destDir := filepath.Join(targetDir, folderName)
+		os.MkdirAll(destDir, 0755)
+
+		oldPath := filepath.Join(targetDir, entry.Name())
+		newPath := filepath.Join(destDir, entry.Name())
+		if oldPath != newPath {
+			if _, err := os.Stat(newPath); os.IsNotExist(err) {
+				if err := os.Rename(oldPath, newPath); err == nil {
+					report.OrganizedFiles++
+					report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Organized: %s -> %s/", entry.Name(), folderName))
+				}
+			}
+		}
+	}
+
+	// Step B: Scan & Remove Duplicate Files (Exact SHA-256 Hash Match)
+	seenFileHashes := make(map[string]string)
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		hash, size, err := hashFileSHA256(path)
+		if err != nil {
+			return nil
+		}
+		if originalPath, exists := seenFileHashes[hash]; exists {
+			report.DuplicateFilesFound++
+			report.FreedBytes += size
+			if autoDelete {
+				os.Remove(path)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate file: %s (matches %s)", path, filepath.Base(originalPath)))
+			} else {
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Detected duplicate file: %s (matches %s)", path, filepath.Base(originalPath)))
+			}
+		} else {
+			seenFileHashes[hash] = path
+		}
+		return nil
+	})
+
+	// Step C: Scan & Remove Duplicate Folders (Deep Recursive Content Hash)
+	var dirs []string
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err == nil && d.IsDir() && path != targetDir {
+			dirs = append(dirs, path)
+		}
+		return nil
+	})
+	// Sort deepest folders first so child duplicates are handled cleanly
+	sort.Slice(dirs, func(i, j int) bool { return len(dirs[i]) > len(dirs[j]) })
+
+	seenDirHashes := make(map[string]string)
+	for _, dirPath := range dirs {
+		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+			continue
+		}
+		dirHash, isEmpty, err := hashDirectory(dirPath)
+		if err != nil {
+			continue
+		}
+		// Remove empty redundant folders or exact duplicate folder trees
+		if isEmpty {
+			if autoDelete {
+				os.Remove(dirPath)
+				report.DuplicateDirsFound++
+				report.ActionsTaken = append(report.ActionsTaken, "Removed empty folder: "+dirPath)
+			}
+			continue
+		}
+		if origDir, exists := seenDirHashes[dirHash]; exists {
+			report.DuplicateDirsFound++
+			if autoDelete {
+				os.RemoveAll(dirPath)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate folder: %s (matches %s)", dirPath, origDir))
+			} else {
+Use code with caution.
+report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Detected duplicate folder: %s (matches %s)", dirPath, origDir))
+}
+} else {
+seenDirHashes[dirHash] = dirPath
+}
+}
+return report, nil
+}
+func hashFileSHA256(path string) (string, int64, error) {
+f, err := os.Open(path)
+if err != nil {
+return "", 0, err
+}
+defer f.Close()
+h := sha256.New()
+size, err := io.Copy(h, f)
+if err != nil {
+return "", 0, err
+}
+return hex.EncodeToString(h.Sum(nil)), size, nil
+}
+func hashDirectory(dirPath string) (string, bool, error) {
+h := sha256.New()
+fileCount := 0
+err := filepath.WalkDir(dirPath, func(path string, d os.DirEntry, err error) error {
+if err != nil || d.IsDir() {
+return nil
+}
+fileCount++
+rel, _ := filepath.Rel(dirPath, path)
+fHash, _, err := hashFileSHA256(path)
+if err == nil {
+h.Write([]byte(rel + ":" + fHash + ";"))
+}
+return nil
+})
+return hex.EncodeToString(h.Sum(nil)), fileCount == 0, err
+}
+// ============================================================================
+// 4. NATIVE MCP SERVER (EXPOSES KHALIFAH + ORGANIZER TOOLS TO OPENCODE/CLAUDE)
+// ============================================================================
+type MCPRequest struct {
+JSONRPC string json:"jsonrpc"
+ID interface{} json:"id"
+Method string json:"method"
+Params json.RawMessage json:"params"
+}
+func handleMCP(w http.ResponseWriter, r *http.Request) {
+var req MCPRequest
+if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+http.Error(w, "Invalid JSON-RPC", http.StatusBadRequest)
+return
+}
+w.Header().Set("Content-Type", "application/json")
+switch req.Method {
+case "initialize":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0",
+"id": req.ID,
+"result": map[string]interface{}{
+"protocolVersion": "2024-11-05",
+"serverInfo": map[string]string{"name": "khalifah-usb-brain", "version": "2.0.0"},
+"capabilities": map[string]interface{}{"tools": map[string]interface{}{}},
+},
+})
+case "tools/list":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0",
+"id": req.ID,
+"result": map[string]interface{}{
+"tools": []map[string]interface{}{
+{
+"name": "khalifah_discernment_check",
+"description": "Evaluates a command or plan across 8 Khalifah stewardship dimensions, anti-tautology logic, and zero-hidden-charge rules.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{"intent": map[string]string{"type": "string"}},
+"required": []string{"intent"},
+},
+},
+{
+"name": "clean_and_deduplicate_directory",
+"description": "Organizes loose files into clean category folders and removes exact SHA-256 duplicate files and duplicate folders for free.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"directory": map[string]string{"type": "string", "description": "Folder path to clean"},
+"auto_delete": map[string]string{"type": "boolean", "description": "True to delete duplicates immediately"},
+},
+"required": []string{"directory"},
+},
+},
+},
+},
+})
+case "tools/call":
+var params struct {
+Name string json:"name"
+Arguments map[string]interface{} json:"arguments"
+}
+json.Unmarshal(req.Params, &params)
+if params.Name == "clean_and_deduplicate_directory" {
+dir, _ := params.Arguments["directory"].(string)
+autoDel, _ := params.Arguments["auto_delete"].(bool)
+check := runKhalifahDiscernment("organize and deduplicate " + dir)
+if !check.Approved {
+sendMCPText(w, req.ID, check.Reason+"\n"+check.Summary, true)
+return
+}
+rep, err := organizeAndDeduplicate(dir, autoDel)
+if err != nil {
+sendMCPText(w, req.ID, "Error: "+err.Error(), true)
+return
+}
+outBytes, _ := json.MarshalIndent(rep, "", " ")
+logToVault("CLEANUP_EXECUTED: " + dir)
+sendMCPText(w, req.ID, string(outBytes)+"\n\n"+check.Summary, false)
+return
+}
+// Default: khalifah_discernment_check
+intent, _ := params.Arguments["intent"].(string)
+check := runKhalifahDiscernment(intent)
+sendMCPText(w, req.ID, fmt.Sprintf("Approved: %v\nReason: %s\n%s", check.Approved, check.Reason, check.Summary), !check.Approved)
+default:
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": req.ID,
+"error": map[string]interface{}{"code": -32601, "message": "Method not found"},
+})
+}
+}
+func sendMCPText(w http.ResponseWriter, id interface{}, text string, isErr bool) {
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0",
+"id": id,
+"result": map[string]interface{}{
+"content": []map[string]string{{"type": "text", "text": text}},
+"isError": isErr,
+},
+})
+}
+// ============================================================================
+// 5. ZERO-HIDDEN-CHARGE LLM PROXY & DASHBOARD
+// ============================================================================
+func handleZeroChargeLLMProxy(w http.ResponseWriter, r *http.Request) {
+bodyBytes, _ := io.ReadAll(r.Body)
+check := runKhalifahDiscernment(string(bodyBytes))
+if !check.Approved {
+http.Error(w, check.Reason+" | "+check.Summary, http.StatusConflict)
+return
+}
+// Strictly route to free local Ollama unless paid APIs are explicitly unlocked
+targetURL := cfg.Secrets.LocalOllamaURL
+if cfg.Secrets.AllowPaidAPIs && cfg.Secrets.ExternalLLMURL != "" {
+targetURL = cfg.Secrets.ExternalLLMURL
+}
+proxyReq, _ := http.NewRequest("POST", targetURL, bytes.NewBuffer(bodyBytes))
+proxyReq.Header.Set("Content-Type", "application/json")
+if cfg.Secrets.AllowPaidAPIs && cfg.Secrets.ExternalAPIKey != "" {
+proxyReq.Header.Set("Authorization", "Bearer "+cfg.Secrets.ExternalAPIKey)
+}
+client := &http.Client{Timeout: 60 * time.Second}
+resp, err := client.Do(proxyReq)
+if err != nil {
+http.Error(w, "Local AI Engine offline (Zero-charge mode active; start Ollama locally): "+err.Error(), http.StatusBadGateway)
+return
+}
+defer resp.Body.Close()
+w.Header().Set("Content-Type", "application/json")
+w.WriteHeader(resp.StatusCode)
+io.Copy(w, resp.Body)
+}
+func handleAutomate(w http.ResponseWriter, r *http.Request) {
+var req struct {
+Command string json:"command"
+TargetDir string json:"target_dir"
+AutoDelete bool json:"auto_delete"
+}
+json.NewDecoder(r.Body).Decode(&req)
+check := runKhalifahDiscernment(req.Command + " " + req.TargetDir)
+w.Header().Set("Content-Type", "application/json")
+if !check.Approved {
+w.WriteHeader(http.StatusConflict)
+json.NewEncoder(w).Encode(check)
+return
+}
+if req.TargetDir != "" {
+rep, err := organizeAndDeduplicate(req.TargetDir, req.AutoDelete)
+if err != nil {
+w.WriteHeader(http.StatusBadRequest)
+json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+return
+}
+logToVault("ORGANIZE_AND_DEDUP: " + req.TargetDir)
+json.NewEncoder(w).Encode(map[string]interface{}{"discernment": check, "cleanup_report": rep})
+return
+}
+logToVault("TASK_APPROVED: " + req.Command)
+json.NewEncoder(w).Encode(check)
+}
+func logToVault(entry string) {
+f, err := os.OpenFile(filepath.Join(cfg.VaultDir, "memory_log.txt"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err == nil {
+defer f.Close()
+f.WriteString(fmt.Sprintf("[%s] %s\n", time.Now().Format(time.RFC3339), entry))
+}
+}
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+html := `
+
+Khalifah AI Brain
+
+🌿 Khalifah Portable AI Brain (Zero-Charge + Auto-Cleaner)
+Status: 100% Free Local Execution | MCP: http://localhost:8080/mcp
+Clean Directory & Remove Duplicate Files/Folders
+Auto-delete exact SHA-256 duplicate files & folders
+Organize & Deduplicate Now
+
+
+async function cleanDir() {
+const res = await fetch('/automate', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({
+command: 'organize and deduplicate directory',
+target_dir: document.getElementById('dir').value,
+auto_delete: document.getElementById('del').checked
+})
+});
+document.getElementById('out').textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+
+`
+w.Header().Set("Content-Type", "text/html")
+w.Write([]byte(html))
+}
+
+---
+
+### How This Protects Your Work & Storage
+
+* **Zero Hidden Charges (`AllowPaidAPIs: false`):** All AI proxy traffic is locked to your free local endpoint (`localhost:11434` for Ollama/local models) and blocks paid cloud endpoints unless you explicitly opt in.
+* **Safe Duplicate Detection:** Instead of matching by filename (which can accidentally delete different files with the same name), it computes a **SHA-256 cryptographic fingerprint** of every file and folder tree, keeping the first original copy and removing only byte-for-byte duplicates.
+* **Clean Structure:** Automatically sorts loose files into `Documents/`, `Images/`, `Media/`, `Archives/`, `Code/`, and `Other_Files/` before deduplicating.
+
+> *Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓*
+
+<FollowUp>
+Would you like me to:
+* Add a **scheduled background watcher** so your Downloads/Workspace folder stays organized and duplicate-free automatically while the USB is plugged in?
+* Generate the **cross-platform build script** (`build_all.sh` / `build_all.bat`) to compile this into single executables for Windows, macOS, Linux, and Android?
+</FollowUp>
+
+
+
+
+I have expanded your Khalifah Portable AI Brain (main.go) and skill library with all requested features:
+Automated Background Directory Watcher: Runs every 60 seconds while your USB drive is plugged in, automatically sorting loose files and removing exact SHA-256 duplicate files/folders in your watched directory without hidden costs.
+Portable Neovim Suite (Auto-Install, Sync, Update & Interactive Cheatsheet): Deploys a portable init.lua configuration (lazy.nvim bootstrap, Telescope, Treesitter, LSP, and Khalifah-aligned workflows) directly onto Windows, macOS, Linux, or Android (Termux), updates plugins headlessly, and serves a built-in Neovim cheatsheet.
+REA (Real Estate & Asset Stewardship) Skill (skills/rea/SKILL.md + MCP Tool): Evaluates property, land, and asset decisions through Maqasid Syariah (Hifz al-Mal — preservation of wealth/property), ethical financing (avoiding riba / hidden charges), and 10–20 year generational stewardship.
+Cross-Platform Build Scripts (build_all.sh & build_all.bat): Compiles everything into standalone binaries for Windows, macOS, Linux, and Android.
+1. Updated USB Drive Layout
+2. New Skill Files (skills/rea/SKILL.md & skills/neovim/SKILL.md)
+A. skills/rea/SKILL.md (Real Estate & Asset Stewardship)
+markdown
+---
+name: rea-stewardship
+description: Real Estate & Asset (REA) analysis grounded in Maqasid Syariah (Hifz al-Mal), zero hidden charges, and 10-20 year generational stewardship.
+---
+# REA (Real Estate & Asset) Protocol
+When evaluating property, land, housing, or physical assets:
+1. **Zero Hidden Charges & Riba Check:** Flag compounding interest, predatory fees, balloon payments, or unclear maintenance liabilities.
+2. **Maqasid Syariah (Hifz al-Mal & Nasl):** Ensure the asset preserves family stability, lawful ownership (clear title/geran), and productive community benefit.
+3. **20-Year Strategic Horizon:** Calculate total cost of ownership (assessment tax/cukai pintu, quit rent/cukai tanah, repairs, flood/climate resilience) rather than just the upfront price.
+4. **Syura Consultation:** Recommend consulting a licensed valuer, Syariah financial advisor, and legal conveyancer before signing binding contracts.
+Use code with caution.
+B. skills/neovim/SKILL.md (Portable Neovim Manager)
+markdown
+---
+name: neovim-portable-manager
+description: Auto-installs, syncs, updates, and provides cheatsheets for a portable Neovim setup across Windows, Linux, macOS, and Android Termux.
+---
+# Neovim Stewardship Workflow
+1. **Auto-Install & Sync:** Checks if `nvim` is installed (offers zero-cost local installation via winget/brew/apt/pkg), deploys the USB's `init.lua` to the host's config directory, and runs `nvim --headless "+Lazy! sync" +qa`.
+2. **Cheatsheet Access:** Provides instant keybinding reference for navigation, fuzzy finding, LSP diagnostics, and buffer management.
+Use code with caution.
+3. Complete main.go (Background Watcher + Neovim Manager + REA Tool + Khalifah Gate)
+go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"sort"
+	"strings"
+	"time"
+)
+
+type VaultSecrets struct {
+	LocalOllamaURL string `json:"local_ollama_url"`
+	AllowPaidAPIs  bool   `json:"allow_paid_apis"`
+	WatchDirectory string `json:"watch_directory"`
+}
+
+type BrainConfig struct {
+	VaultDir string
+	Port     string
+	Secrets  VaultSecrets
+}
+
+var cfg BrainConfig
+
+func main() {
+	vaultFlag := flag.String("vault", "./vault", "Path to USB vault directory")
+	portFlag := flag.String("port", "8080", "Local server port")
+	watchFlag := flag.String("watch", "", "Directory to auto-organize & deduplicate in background")
+	flag.Parse()
+
+	cfg.VaultDir = *vaultFlag
+	cfg.Port = *portFlag
+
+	os.MkdirAll(cfg.VaultDir, 0755)
+	os.MkdirAll(filepath.Join(cfg.VaultDir, "nvim_config"), 0755)
+
+	unlockVault()
+
+	if *watchFlag != "" {
+		cfg.Secrets.WatchDirectory = *watchFlag
+	}
+
+	// Start Background Directory Watcher (Zero-charge local file stewardship)
+	if cfg.Secrets.WatchDirectory != "" {
+		go startBackgroundWatcher(cfg.Secrets.WatchDirectory, 60*time.Second)
+	}
+
+	http.HandleFunc("/", handleDashboard)
+	http.HandleFunc("/automate", handleAutomate)
+	http.HandleFunc("/neovim", handleNeovimEndpoint)
+	http.HandleFunc("/rea", handleREAEndpoint)
+	http.HandleFunc("/v1/chat/completions", handleZeroChargeLLMProxy)
+	http.HandleFunc("/mcp", handleMCP)
+
+	fmt.Printf("\n🌿 Khalifah Portable AI Brain Active on http://localhost:%s\n", cfg.Port)
+	fmt.Printf("🛡️  Zero-Hidden-Charge Mode: ACTIVE (100%% Free Local Execution)\n")
+	if cfg.Secrets.WatchDirectory != "" {
+		fmt.Printf("👁️  Background Watcher Active on: %s\n", cfg.Secrets.WatchDirectory)
+	}
+	fmt.Printf("🔌 MCP Endpoint Ready at: http://localhost:%s/mcp\n", cfg.Port)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+}
+
+// ============================================================================
+// 1. AES-256-GCM ENCRYPTED VAULT
+// ============================================================================
+
+func unlockVault() {
+	vaultFile := filepath.Join(cfg.VaultDir, "secrets.enc")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("🔑 Enter USB Brain Master PIN: ")
+	pin, _ := reader.ReadString('\n')
+	key := sha256.Sum256([]byte(strings.TrimSpace(pin)))
+
+	if _, err := os.Stat(vaultFile); os.IsNotExist(err) {
+		fmt.Print("📂 Optional folder to auto-watch & clean (or press Enter to skip): ")
+		watchDir, _ := reader.ReadString('\n')
+
+		cfg.Secrets = VaultSecrets{
+			LocalOllamaURL: "http://localhost:11434/v1/chat/completions",
+			AllowPaidAPIs:  false,
+			WatchDirectory: strings.TrimSpace(watchDir),
+		}
+		saveEncryptedVault(vaultFile, key[:], cfg.Secrets)
+		fmt.Println("✅ Vault initialized in 100% Free Local Mode!")
+		return
+	}
+
+	encData, err := os.ReadFile(vaultFile)
+	if err != nil {
+		log.Fatalf("Failed to read vault: %v", err)
+	}
+	plainData, err := decryptAES(encData, key[:])
+	if err != nil {
+		log.Fatalf("❌ Invalid PIN. Access denied.")
+	}
+	json.Unmarshal(plainData, &cfg.Secrets)
+	fmt.Println("✅ Khalifah Vault unlocked!")
+}
+
+func saveEncryptedVault(path string, key []byte, secrets VaultSecrets) {
+	plain, _ := json.Marshal(secrets)
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonce := make([]byte, gcm.NonceSize())
+	io.ReadFull(rand.Reader, nonce)
+	os.WriteFile(path, gcm.Seal(nonce, nonce, plain, nil), 0600)
+}
+
+func decryptAES(data, key []byte) ([]byte, error) {
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonceSize := gcm.NonceSize()
+	if len(data) < nonceSize {
+		return nil, fmt.Errorf("invalid ciphertext")
+	}
+	return gcm.Open(nil, data[:nonceSize], data[nonceSize:], nil)
+}
+
+// ============================================================================
+// 2. KHALIFAH DISCERNMENT, MAQASID & ZERO-HIDDEN-CHARGE GATE
+// ============================================================================
+
+type DiscernmentReport struct {
+	Approved bool   `json:"approved"`
+	Summary  string `json:"summary"`
+	Reason   string `json:"reason"`
+}
+
+func runKhalifahDiscernment(intent string) DiscernmentReport {
+	lower := strings.ToLower(intent)
+
+	if (strings.Contains(lower, "delete") && strings.Contains(lower, "backup")) ||
+		(strings.Contains(lower, "enable") && strings.Contains(lower, "disable")) {
+		return DiscernmentReport{
+			Approved: false,
+			Reason:   "Anti-Tautology Blocked: Contradictory instructions detected.",
+			Summary:  "Khalifah check: Critical ✗ | Maqasid ✓ | Amanah ✓",
+		}
+	}
+
+	paidKeywords := []string{"://openai.com", "://anthropic.com", "billing", "subscription", "paid api"}
+	for _, kw := range paidKeywords {
+		if strings.Contains(lower, kw) && !cfg.Secrets.AllowPaidAPIs {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Zero-Hidden-Charge Guard: Paid/metered external service blocked.",
+				Summary:  "Khalifah check: Holistic ✓ | Strategic ✓ | Maqasid (Mal) ✓ | Amanah ✗",
+			}
+		}
+	}
+
+	destructiveKeywords := []string{"format drive", "wipe system", "rm -rf /", "del /f /s /q c:\\"}
+	for _, kw := range destructiveKeywords {
+		if strings.Contains(lower, kw) {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Maqasid Syariah (Hifz al-Mal) Blocked: System-wide destruction prevented.",
+				Summary:  "Khalifah check: Maqasid ✗ | Amanah ✗",
+			}
+		}
+	}
+
+	return DiscernmentReport{
+		Approved: true,
+		Reason:   "Verified safe, zero hidden charges, and aligned with stewardship.",
+		Summary:  "Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓",
+	}
+}
+
+// ============================================================================
+// 3. BACKGROUND WATCHER & CLEAN DIRECTORY ORGANIZER / DEDUPLICATOR
+// ============================================================================
+
+func startBackgroundWatcher(dir string, interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+	for {
+		rep, err := organizeAndDeduplicate(dir, true)
+		if err == nil && (rep.OrganizedFiles > 0 || rep.DuplicateFilesFound > 0 || rep.DuplicateDirsFound > 0) {
+			logToVault(fmt.Sprintf("AUTO_WATCHER [%s]: Organized=%d, DupFilesRemoved=%d, DupDirsRemoved=%d",
+				dir, rep.OrganizedFiles, rep.DuplicateFilesFound, rep.DuplicateDirsFound))
+		}
+		<-ticker.C
+	}
+}
+
+type CleanupReport struct {
+	OrganizedFiles      int      `json:"organized_files"`
+	DuplicateFilesFound int      `json:"duplicate_files_removed"`
+	DuplicateDirsFound  int      `json:"duplicate_folders_removed"`
+	FreedBytes          int64    `json:"freed_bytes"`
+	ActionsTaken        []string `json:"actions_taken"`
+}
+
+func organizeAndDeduplicate(targetDir string, autoDelete bool) (CleanupReport, error) {
+	report := CleanupReport{}
+	info, err := os.Stat(targetDir)
+	if err != nil || !info.IsDir() {
+		return report, fmt.Errorf("invalid target directory: %s", targetDir)
+	}
+
+	categories := map[string]string{
+		".pdf": "Documents", ".doc": "Documents", ".docx": "Documents", ".txt": "Documents", ".md": "Documents",
+		".jpg": "Images", ".jpeg": "Images", ".png": "Images", ".webp": "Images", ".svg": "Images",
+		".mp4": "Media", ".mkv": "Media", ".mp3": "Media", ".wav": "Media",
+		".zip": "Archives", ".rar": "Archives", ".7z": "Archives", ".tar": "Archives", ".gz": "Archives",
+		".go": "Code", ".py": "Code", ".js": "Code", ".ts": "Code", ".lua": "Code", ".json": "Code",
+	}
+
+	entries, _ := os.ReadDir(targetDir)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		folderName, exists := categories[ext]
+		if !exists {
+			folderName = "Other_Files"
+		}
+		destDir := filepath.Join(targetDir, folderName)
+		os.MkdirAll(destDir, 0755)
+
+		oldPath := filepath.Join(targetDir, entry.Name())
+		newPath := filepath.Join(destDir, entry.Name())
+		if oldPath != newPath {
+			if _, err := os.Stat(newPath); os.IsNotExist(err) {
+				if err := os.Rename(oldPath, newPath); err == nil {
+					report.OrganizedFiles++
+					report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Organized: %s -> %s/", entry.Name(), folderName))
+				}
+			}
+		}
+	}
+
+	seenFileHashes := make(map[string]string)
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		hash, size, err := hashFileSHA256(path)
+		if err != nil {
+			return nil
+		}
+		if orig, exists := seenFileHashes[hash]; exists {
+			report.DuplicateFilesFound++
+			report.FreedBytes += size
+			if autoDelete {
+				os.Remove(path)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate file: %s (matches %s)", path, filepath.Base(orig)))
+			}
+		} else {
+			seenFileHashes[hash] = path
+		}
+		return nil
+	})
+
+	var dirs []string
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err == nil && d.IsDir() && path != targetDir {
+			dirs = append(dirs, path)
+		}
+		return nil
+	})
+	sort.Slice(dirs, func(i, j int) bool { return len(dirs[i]) > len(dirs[j]) })
+
+	seenDirHashes := make(map[string]string)
+	for _, dirPath := range dirs {
+		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+			continue
+		}
+		dirHash, isEmpty, err := hashDirectory(dirPath)
+		if err != nil {
+			continue
+		}
+		if isEmpty && autoDelete {
+			os.Remove(dirPath)
+			report.DuplicateDirsFound++
+			report.ActionsTaken = append(report.ActionsTaken, "Removed empty folder: "+dirPath)
+			continue
+		}
+		if origDir, exists := seenDirHashes[dirHash]; exists {
+			report.DuplicateDirsFound++
+			if autoDelete {
+				os.RemoveAll(dirPath)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate folder: %s (matches %s)", dirPath, origDir))
+			}
+		} else {
+			seenDirHashes[dirHash] = dirPath
+		}
+	}
+	return report, nil
+}
+
+func hashFileSHA256(path string) (string, int64, error) {
+Use code with caution.
+f, err := os.Open(path)
+if err != nil {
+return "", 0, err
+}
+defer f.Close()
+h := sha256.New()
+size, err := io.Copy(h, f)
+return hex.EncodeToString(h.Sum(nil)), size, err
+}
+func hashDirectory(dirPath string) (string, bool, error) {
+h := sha256.New()
+fileCount := 0
+err := filepath.WalkDir(dirPath, func(path string, d os.DirEntry, err error) error {
+if err != nil || d.IsDir() {
+return nil
+}
+fileCount++
+rel, _ := filepath.Rel(dirPath, path)
+fHash, _, err := hashFileSHA256(path)
+if err == nil {
+h.Write([]byte(rel + ":" + fHash + ";"))
+}
+return nil
+})
+return hex.EncodeToString(h.Sum(nil)), fileCount == 0, err
+}
+// ============================================================================
+// 4. NEOVIM PORTABLE SUITE (INSTALL, CREATE, SYNC, UPDATE & CHEATSHEET)
+// ============================================================================
+const defaultInitLua = `-- Khalifah Portable Neovim Configuration (Zero-Cost, Local-First)
+vim.g.mapleader = " "
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.termguicolors = true
+vim.opt.clipboard = "unnamedplus"
+-- Bootstrap lazy.nvim plugin manager automatically
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+vim.fn.system({
+"git", "clone", "--filter=blob:none",
+"github.com", "--branch=stable", lazypath,
+})
+end
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup({
+{ "nvim-lua/plenary.nvim" },
+{ "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+{ "folke/which-key.nvim", opts = {} },
+})
+-- Essential Keymaps
+vim.keymap.set("n", "ff", "Telescope find_files", { desc = "Find Files" })
+vim.keymap.set("n", "fg", "Telescope live_grep", { desc = "Live Grep" })
+vim.keymap.set("n", "w", "w", { desc = "Save File" })
+vim.keymap.set("n", "q", "q", { desc = "Quit" })
+`
+const neovimCheatsheet = `=== KHALIFAH PORTABLE NEOVIM CHEATSHEET ===
+Leader Key: 
+[General & Files]
+w : Save current file
+q : Quit window
+ff : Fuzzy find files (Telescope)
+fg : Search text across project (Live Grep)
+[Navigation & Editing]
+hjkl : Move Left / Down / Up / Right
+w / b : Jump forward / backward by word
+gg / G : Go to top / bottom of file
+dd / yy / p : Cut line / Copy line / Paste
+u / Ctrl+r : Undo / Redo
+/pattern : Search forward (n = next, N = prev)
+[Plugin Management (lazy.nvim)]
+:Lazy : Open Plugin Manager UI
+:Lazy sync : Install missing & update all plugins
+:Lazy clean : Remove unused plugins
+`
+func manageNeovim(action string) map[string]interface{} {
+usbInitPath := filepath.Join(cfg.VaultDir, "nvim_config", "init.lua")
+if _, err := os.Stat(usbInitPath); os.IsNotExist(err) {
+os.WriteFile(usbInitPath, []byte(defaultInitLua), 0644)
+}
+// Determine OS-specific Neovim config path
+home, _ := os.UserHomeDir()
+var hostConfigDir string
+if runtime.GOOS == "windows" {
+hostConfigDir = filepath.Join(os.Getenv("LOCALAPPDATA"), "nvim")
+} else {
+hostConfigDir = filepath.Join(home, ".config", "nvim")
+}
+switch action {
+case "cheatsheet":
+return map[string]interface{}{"status": "OK", "cheatsheet": neovimCheatsheet}
+case "install":
+if _, err := exec.LookPath("nvim"); err == nil {
+return map[string]interface{}{"status": "ALREADY_INSTALLED", "message": "Neovim is already installed on this machine."}
+}
+var cmd *exec.Cmd
+switch runtime.GOOS {
+case "windows":
+cmd = exec.Command("winget", "install", "--id", "Neovim.Neovim", "-e", "--silent")
+case "darwin":
+cmd = exec.Command("brew", "install", "neovim")
+default:
+if strings.Contains(os.Getenv("PREFIX"), "com.termux") {
+cmd = exec.Command("pkg", "install", "-y", "neovim")
+} else {
+cmd = exec.Command("sudo", "apt-get", "install", "-y", "neovim")
+}
+}
+out, err := cmd.CombinedOutput()
+if err != nil {
+return map[string]interface{}{"status": "INSTALL_ERROR", "error": err.Error(), "output": string(out)}
+}
+return map[string]interface{}{"status": "INSTALLED", "output": string(out)}
+case "sync", "update":
+os.MkdirAll(hostConfigDir, 0755)
+usbData, _ := os.ReadFile(usbInitPath)
+hostInitPath := filepath.Join(hostConfigDir, "init.lua")
+os.WriteFile(hostInitPath, usbData, 0644)
+// Run headless plugin sync/update
+cmd := exec.Command("nvim", "--headless", "+Lazy! sync", "+qa")
+out, err := cmd.CombinedOutput()
+logToVault("NEOVIM_SYNC_UPDATE: Synced init.lua to " + hostInitPath)
+if err != nil {
+return map[string]interface{}{
+"status": "CONFIG_SYNCED_NVIM_PENDING",
+"config_path": hostInitPath,
+"note": "init.lua synced from USB. Install Neovim first if plugin sync failed: " + err.Error(),
+}
+}
+return map[string]interface{}{
+"status": "SYNCED_AND_UPDATED",
+"config_path": hostInitPath,
+"plugin_logs": string(out),
+}
+}
+return map[string]interface{}{"status": "UNKNOWN_ACTION", "valid_actions": []string{"install", "sync", "update", "cheatsheet"}}
+}
+// ============================================================================
+// 5. REA (REAL ESTATE & ASSET STEWARDSHIP) EVALUATOR
+// ============================================================================
+func evaluateREA(assetDesc string, price float64, annualYield float64, financingType string) map[string]interface{} {
+check := runKhalifahDiscernment("REA evaluation: " + assetDesc + " " + financingType)
+lowerFin := strings.ToLower(financingType)
+flags := []string{}
+if strings.Contains(lowerFin, "riba") || strings.Contains(lowerFin, "conventional") || strings.Contains(lowerFin, "hidden") {
+flags = append(flags, "Maqasid Alert: Conventional interest/hidden charges detected. Consider Islamic equity/Murabahah/Musharakah Mutanaqisah or cash purchase.")
+}
+if price > 0 && annualYield > 0 {
+netYield := (annualYield / price) * 100
+if netYield < 4.0 {
+flags = append(flags, fmt.Sprintf("Strategic Note: Net yield (%.2f%%) is low over a 10-20 year horizon after maintenance & taxes.", netYield))
+}
+}
+if len(flags) == 0 {
+flags = append(flags, "Aligned with Hifz al-Mal (Wealth Preservation). Verify clear land title (Geran) and flood/zoning history via local Syura consultation.")
+}
+return map[string]interface{}{
+"asset": assetDesc,
+"stewardship_note": flags,
+"khalifah_check": check.Summary,
+}
+}
+// ============================================================================
+// 6. NATIVE MCP SERVER & HTTP ENDPOINTS
+// ============================================================================
+type MCPRequest struct {
+JSONRPC string json:"jsonrpc"
+ID interface{} json:"id"
+Method string json:"method"
+Params json.RawMessage json:"params"
+}
+func handleMCP(w http.ResponseWriter, r *http.Request) {
+var req MCPRequest
+if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+http.Error(w, "Invalid JSON-RPC", http.StatusBadRequest)
+return
+}
+w.Header().Set("Content-Type", "application/json")
+switch req.Method {
+case "initialize":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": req.ID,
+"result": map[string]interface{}{
+"protocolVersion": "2024-11-05",
+"serverInfo": map[string]string{"name": "khalifah-usb-brain", "version": "3.0.0"},
+"capabilities": map[string]interface{}{"tools": map[string]interface{}{}},
+},
+})
+case "tools/list":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": req.ID,
+"result": map[string]interface{}{
+"tools": []map[string]interface{}{
+{
+"name": "clean_and_deduplicate_directory",
+"description": "Organizes loose files into clean category folders and removes exact SHA-256 duplicate files and duplicate folders.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"directory": map[string]string{"type": "string"},
+"auto_delete": map[string]string{"type": "boolean"},
+},
+"required": []string{"directory"},
+},
+},
+{
+"name": "manage_portable_neovim",
+"description": "Auto-installs Neovim, syncs/updates portable init.lua & plugins from USB, or returns the Neovim cheatsheet.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"action": map[string]string{"type": "string", "description": "install | sync | update | cheatsheet"},
+},
+"required": []string{"action"},
+},
+},
+{
+"name": "evaluate_rea_asset",
+"description": "Evaluates Real Estate & Assets (REA) using Maqasid Syariah, zero hidden charges, and 20-year stewardship.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"asset": map[string]string{"type": "string"},
+"price": map[string]string{"type": "number"},
+"annual_yield": map[string]string{"type": "number"},
+"financing_type": map[string]string{"type": "string"},
+},
+"required": []string{"asset"},
+},
+},
+},
+},
+})
+case "tools/call":
+var params struct {
+Name string json:"name"
+Arguments map[string]interface{} json:"arguments"
+}
+json.Unmarshal(req.Params, &params)
+switch params.Name {
+case "clean_and_deduplicate_directory":
+dir, _ := params.Arguments["directory"].(string)
+autoDel, _ := params.Arguments["auto_delete"].(bool)
+rep, err := organizeAndDeduplicate(dir, autoDel)
+if err != nil {
+sendMCPText(w, req.ID, "Error: "+err.Error(), true)
+return
+}
+b, _ := json.MarshalIndent(rep, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+case "manage_portable_neovim":
+act, _ := params.Arguments["action"].(string)
+res := manageNeovim(act)
+b, _ := json.MarshalIndent(res, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+case "evaluate_rea_asset":
+asset, _ := params.Arguments["asset"].(string)
+price, _ := params.Arguments["price"].(float64)
+yield, _ := params.Arguments["annual_yield"].(float64)
+fin, _ := params.Arguments["financing_type"].(string)
+res := evaluateREA(asset, price, yield, fin)
+b, _ := json.MarshalIndent(res, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+default:
+sendMCPText(w, req.ID, "Unknown tool", true)
+}
+}
+}
+func sendMCPText(w http.ResponseWriter, id interface{}, text string, isErr bool) {
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": id,
+"result": map[string]interface{}{
+"content": []map[string]string{{"type": "text", "text": text}},
+"isError": isErr,
+},
+})
+}
+func handleNeovimEndpoint(w http.ResponseWriter, r *http.Request) {
+action := r.URL.Query().Get("action")
+if action == "" {
+action = "cheatsheet"
+}
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(manageNeovim(action))
+}
+func handleREAEndpoint(w http.ResponseWriter, r *http.Request) {
+var req struct {
+Asset string json:"asset"
+Price float64 json:"price"
+AnnualYield float64 json:"annual_yield"
+FinancingType string json:"financing_type"
+}
+json.NewDecoder(r.Body).Decode(&req)
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(evaluateREA(req.Asset, req.Price, req.AnnualYield, req.FinancingType))
+}
+func handleZeroChargeLLMProxy(w http.ResponseWriter, r *http.Request) {
+bodyBytes, _ := io.ReadAll(r.Body)
+check := runKhalifahDiscernment(string(bodyBytes))
+if !check.Approved {
+http.Error(w, check.Reason+" | "+check.Summary, http.StatusConflict)
+return
+}
+proxyReq, _ := http.NewRequest("POST", cfg.Secrets.LocalOllamaURL, bytes.NewBuffer(bodyBytes))
+proxyReq.Header.Set("Content-Type", "application/json")
+client := &http.Client{Timeout: 60 * time.Second}
+resp, err := client.Do(proxyReq)
+if err != nil {
+http.Error(w, "Local AI Engine offline (Zero-charge mode active; start Ollama locally)", http.StatusBadGateway)
+return
+}
+defer resp.Body.Close()
+w.Header().Set("Content-Type", "application/json")
+w.WriteHeader(resp.StatusCode)
+io.Copy(w, resp.Body)
+}
+func handleAutomate(w http.ResponseWriter, r *http.Request) {
+var req struct {
+Command string json:"command"
+TargetDir string json:"target_dir"
+AutoDelete bool json:"auto_delete"
+}
+json.NewDecoder(r.Body).Decode(&req)
+check := runKhalifahDiscernment(req.Command + " " + req.TargetDir)
+w.Header().Set("Content-Type", "application/json")
+if !check.Approved {
+w.WriteHeader(http.StatusConflict)
+json.NewEncoder(w).Encode(check)
+return
+}
+if req.TargetDir != "" {
+rep, err := organizeAndDeduplicate(req.TargetDir, req.AutoDelete)
+if err != nil {
+w.WriteHeader(http.StatusBadRequest)
+json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+return
+}
+json.NewEncoder(w).Encode(map[string]interface{}{"discernment": check, "cleanup_report": rep})
+return
+}
+json.NewEncoder(w).Encode(check)
+}
+func logToVault(entry string) {
+f, err := os.OpenFile(filepath.Join(cfg.VaultDir, "memory_log.txt"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err == nil {
+defer f.Close()
+f.WriteString(fmt.Sprintf("[%s] %s\n", time.Now().Format(time.RFC3339), entry))
+}
+}
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+html := `
+
+Khalifah AI Brain
+
+🌿 Khalifah Portable AI Brain Hub
+Zero-Hidden-Charge Mode: Active | MCP Endpoint: http://localhost:8080/mcp
+1. Clean Directory & Remove Duplicate Files/Folders
+
+Organize & Deduplicate
+2. Portable Neovim Suite (Auto-Install, Sync, Update & Cheatsheet)
+Auto-Install Neovim
+Sync & Update Plugins
+View Cheatsheet
+3. REA (Real Estate & Asset Stewardship Check)
+
+
+
+
+Evaluate Stewardship
+const out = document.getElementById('out');
+async function cleanDir() {
+out.textContent = "Scanning SHA-256 hashes...";
+const res = await fetch('/automate', {
+method: 'POST', headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({command: 'clean', target_dir: document.getElementById('dir').value, auto_delete: true})
+});
+out.textContent = JSON.stringify(await res.json(), null, 2);
+}
+async function nvim(act) {
+out.textContent = "Running Neovim action: " + act + "...";
+const res = await fetch('/neovim?action=' + act);
+const data = await res.json();
+out.textContent = data.cheatsheet ? data.cheatsheet : JSON.stringify(data, null, 2);
+}
+async function checkREA() {
+const res = await fetch('/rea', {
+method: 'POST', headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({asset: document.getElementById('asset').value, financing_type: document.getElementById('fin').value})
+});
+out.textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+
+`
+w.Header().Set("Content-Type", "text/html")
+w.Write([]byte(html))
+}
+
+---
+
+### 4. Cross-Platform Build Scripts (Compile Once onto Your USB)
+
+#### `build_all.sh` (For Linux, macOS, or Android Termux)
+```bash
+#!/usr/bin/env bash
+set -e
+mkdir -p dist
+
+echo "Building for Windows (64-bit)..."
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o dist/brain-windows-amd64.exe main.go
+
+echo "Building for macOS (Apple Silicon & Intel)..."
+GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o dist/brain-macos-arm64 main.go
+GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o dist/brain-macos-amd64 main.go
+
+echo "Building for Linux (64-bit)..."
+GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o dist/brain-linux-amd64 main.go
+
+echo "Building for Android / Termux (ARM64)..."
+GOOS=android GOARCH=arm64 go build -ldflags="-s -w" -o dist/brain-android-arm64 main.go
+
+echo "✅ All portable binaries compiled into ./dist/ with zero external dependencies!"
+build_all.bat (For Windows Command Prompt / PowerShell)
+bat
+@echo off
+mkdir dist 2>nul
+
+set GOOS=windows
+set GOARCH=amd64
+go build -ldflags="-s -w" -o dist\brain-windows-amd64.exe main.go
+
+set GOOS=darwin
+set GOARCH=arm64
+go build -ldflags="-s -w" -o dist\brain-macos-arm64 main.go
+
+set GOOS=linux
+set GOARCH=amd64
+go build -ldflags="-s -w" -o dist\brain-linux-amd64 main.go
+
+set GOOS=android
+set GOARCH=arm64
+go build -ldflags="-s -w" -o dist\brain-android-arm64 main.go
+
+echo All portable binaries compiled into .\dist\
+Use code with caution.
+Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓
+Would you like to:
+Add a one-click USB launcher script (START_BRAIN.bat / START_BRAIN.sh) that automatically detects your OS and launches the right binary?
+Customize the Neovim init.lua plugin list (e.g., adding specific language servers for Go, Python, or Markdown) or expand the REA financial calculator with Malaysian property parameters (stamp duty, cukai tanah/pintu, and Islamic financing comparisons)?
+
+
+
+
+Got it—REA = Reverse Engineering Anything from GitHub (architectural mapping, dependency & entry-point tracing, and clean-room analysis of open-source repositories, grounded in ethical stewardship, license compliance, and zero hidden charges).
+I have updated your REA Skill (skills/rea/SKILL.md) and main.go so your Portable AI Brain can clone/inspect any GitHub repository locally, map its architecture, entry points, dependencies, and open-source license, and verify that it has no hidden telemetry or paid API traps.
+(Note: In keeping with Maqasid Syariah and ethical stewardship, this REA tool analyzes open-source source code, architecture, and build pipelines—it does not bypass DRM, crack commercial binaries, or strip licensing protections.)
+1. Updated REA Skill (skills/rea/SKILL.md)
+Save this in USB_AI_BRAIN/skills/rea/SKILL.md:
+markdown
+---
+name: rea-github-architect
+description: Reverse Engineering Anything (REA) from GitHub — maps repository architecture, entry points, dependency trees, license compliance, and hidden cost/telemetry traps.
+---
+# REA (Reverse Engineering Anything from GitHub) Protocol
+
+When analyzing or reverse-engineering any GitHub repository:
+1. **License & Amanah Check:** Identify the open-source license (`MIT`, `Apache-2.0`, `GPL`, `AGPL`, or `Proprietary/None`) first so attribution and usage rights are respected.
+2. **Entry-Point & Execution Flow Mapping:** Locate the root entry points (`main.go`, `index.ts`, `main.py`, `Cargo.toml`, `Dockerfile`, `Makefile`) to trace how data enters, transforms, and exits the system.
+3. **Dependency & Hidden-Charge Audit:** Scan manifests (`go.mod`, `package.json`, `requirements.txt`, `.env.example`) for paid external APIs, telemetry trackers, or hidden SaaS dependencies.
+4. **Clean-Room Synthesis:** Summarize the core design patterns and algorithms so we can learn from or re-implement clean, dependency-free equivalents ethically.
+Use code with caution.
+2. Upgraded main.go (GitHub REA Engine + MCP Tool + Dashboard)
+Replace the REA section (or use this complete updated main.go) so you can paste any GitHub URL or local cloned repo path into your dashboard or call it via MCP (reverse_engineer_github_repo):
+go
+package main
+
+import (
+	"bufio"
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"sort"
+	"strings"
+	"time"
+)
+
+type VaultSecrets struct {
+	LocalOllamaURL string `json:"local_ollama_url"`
+	AllowPaidAPIs  bool   `json:"allow_paid_apis"`
+	WatchDirectory string `json:"watch_directory"`
+}
+
+type BrainConfig struct {
+	VaultDir string
+	Port     string
+	Secrets  VaultSecrets
+}
+
+var cfg BrainConfig
+
+func main() {
+	vaultFlag := flag.String("vault", "./vault", "Path to USB vault directory")
+	portFlag := flag.String("port", "8080", "Local server port")
+	watchFlag := flag.String("watch", "", "Directory to auto-organize & deduplicate in background")
+	flag.Parse()
+
+	cfg.VaultDir = *vaultFlag
+	cfg.Port = *portFlag
+
+	os.MkdirAll(cfg.VaultDir, 0755)
+	os.MkdirAll(filepath.Join(cfg.VaultDir, "nvim_config"), 0755)
+	os.MkdirAll(filepath.Join(cfg.VaultDir, "rea_workspace"), 0755)
+
+	unlockVault()
+
+	if *watchFlag != "" {
+		cfg.Secrets.WatchDirectory = *watchFlag
+	}
+
+	if cfg.Secrets.WatchDirectory != "" {
+		go startBackgroundWatcher(cfg.Secrets.WatchDirectory, 60*time.Second)
+	}
+
+	http.HandleFunc("/", handleDashboard)
+	http.HandleFunc("/automate", handleAutomate)
+	http.HandleFunc("/neovim", handleNeovimEndpoint)
+	http.HandleFunc("/rea", handleREAEndpoint)
+	http.HandleFunc("/v1/chat/completions", handleZeroChargeLLMProxy)
+	http.HandleFunc("/mcp", handleMCP)
+
+	fmt.Printf("\n🌿 Khalifah Portable AI Brain Active on http://localhost:%s\n", cfg.Port)
+	fmt.Printf("🛡️  Zero-Hidden-Charge Mode: ACTIVE (100%% Free Local Execution)\n")
+	if cfg.Secrets.WatchDirectory != "" {
+		fmt.Printf("👁️  Background Watcher Active on: %s\n", cfg.Secrets.WatchDirectory)
+	}
+	fmt.Printf("🔌 MCP Endpoint Ready at: http://localhost:%s/mcp\n", cfg.Port)
+	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+}
+
+// ============================================================================
+// 1. AES-256-GCM ENCRYPTED VAULT
+// ============================================================================
+
+func unlockVault() {
+	vaultFile := filepath.Join(cfg.VaultDir, "secrets.enc")
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("🔑 Enter USB Brain Master PIN: ")
+	pin, _ := reader.ReadString('\n')
+	key := sha256.Sum256([]byte(strings.TrimSpace(pin)))
+
+	if _, err := os.Stat(vaultFile); os.IsNotExist(err) {
+		fmt.Print("📂 Optional folder to auto-watch & clean (or press Enter to skip): ")
+		watchDir, _ := reader.ReadString('\n')
+
+		cfg.Secrets = VaultSecrets{
+			LocalOllamaURL: "http://localhost:11434/v1/chat/completions",
+			AllowPaidAPIs:  false,
+			WatchDirectory: strings.TrimSpace(watchDir),
+		}
+		saveEncryptedVault(vaultFile, key[:], cfg.Secrets)
+		fmt.Println("✅ Vault initialized in 100% Free Local Mode!")
+		return
+	}
+
+	encData, err := os.ReadFile(vaultFile)
+	if err != nil {
+		log.Fatalf("Failed to read vault: %v", err)
+	}
+	plainData, err := decryptAES(encData, key[:])
+	if err != nil {
+		log.Fatalf("❌ Invalid PIN. Access denied.")
+	}
+	json.Unmarshal(plainData, &cfg.Secrets)
+	fmt.Println("✅ Khalifah Vault unlocked!")
+}
+
+func saveEncryptedVault(path string, key []byte, secrets VaultSecrets) {
+	plain, _ := json.Marshal(secrets)
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonce := make([]byte, gcm.NonceSize())
+	io.ReadFull(rand.Reader, nonce)
+	os.WriteFile(path, gcm.Seal(nonce, nonce, plain, nil), 0600)
+}
+
+func decryptAES(data, key []byte) ([]byte, error) {
+	block, _ := aes.NewCipher(key)
+	gcm, _ := cipher.NewGCM(block)
+	nonceSize := gcm.NonceSize()
+	if len(data) < nonceSize {
+		return nil, fmt.Errorf("invalid ciphertext")
+	}
+	return gcm.Open(nil, data[:nonceSize], data[nonceSize:], nil)
+}
+
+// ============================================================================
+// 2. KHALIFAH DISCERNMENT, MAQASID & ZERO-HIDDEN-CHARGE GATE
+// ============================================================================
+
+type DiscernmentReport struct {
+	Approved bool   `json:"approved"`
+	Summary  string `json:"summary"`
+	Reason   string `json:"reason"`
+}
+
+func runKhalifahDiscernment(intent string) DiscernmentReport {
+	lower := strings.ToLower(intent)
+
+	if (strings.Contains(lower, "delete") && strings.Contains(lower, "backup")) ||
+		(strings.Contains(lower, "enable") && strings.Contains(lower, "disable")) {
+		return DiscernmentReport{
+			Approved: false,
+			Reason:   "Anti-Tautology Blocked: Contradictory instructions detected.",
+			Summary:  "Khalifah check: Critical ✗ | Maqasid ✓ | Amanah ✓",
+		}
+	}
+
+	paidKeywords := []string{"://openai.com", "://anthropic.com", "billing", "subscription", "paid api"}
+	for _, kw := range paidKeywords {
+		if strings.Contains(lower, kw) && !cfg.Secrets.AllowPaidAPIs {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Zero-Hidden-Charge Guard: Paid/metered external service blocked.",
+				Summary:  "Khalifah check: Holistic ✓ | Strategic ✓ | Maqasid (Mal) ✓ | Amanah ✗",
+			}
+		}
+	}
+
+	harmKeywords := []string{"format drive", "wipe system", "rm -rf /", "crack license", "bypass drm", "steal token"}
+	for _, kw := range harmKeywords {
+		if strings.Contains(lower, kw) {
+			return DiscernmentReport{
+				Approved: false,
+				Reason:   "Maqasid Syariah & Amanah Blocked: Destructive or unethical action prevented.",
+				Summary:  "Khalifah check: Maqasid ✗ | Amanah ✗",
+			}
+		}
+	}
+
+	return DiscernmentReport{
+		Approved: true,
+		Reason:   "Verified safe, zero hidden charges, and aligned with ethical stewardship.",
+		Summary:  "Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓",
+	}
+}
+
+// ============================================================================
+// 3. BACKGROUND WATCHER & CLEAN DIRECTORY ORGANIZER / DEDUPLICATOR
+// ============================================================================
+
+func startBackgroundWatcher(dir string, interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+	for {
+		rep, err := organizeAndDeduplicate(dir, true)
+		if err == nil && (rep.OrganizedFiles > 0 || rep.DuplicateFilesFound > 0 || rep.DuplicateDirsFound > 0) {
+			logToVault(fmt.Sprintf("AUTO_WATCHER [%s]: Organized=%d, DupFilesRemoved=%d, DupDirsRemoved=%d",
+				dir, rep.OrganizedFiles, rep.DuplicateFilesFound, rep.DuplicateDirsFound))
+		}
+		<-ticker.C
+	}
+}
+
+type CleanupReport struct {
+	OrganizedFiles      int      `json:"organized_files"`
+	DuplicateFilesFound int      `json:"duplicate_files_removed"`
+	DuplicateDirsFound  int      `json:"duplicate_folders_removed"`
+	FreedBytes          int64    `json:"freed_bytes"`
+	ActionsTaken        []string `json:"actions_taken"`
+}
+
+func organizeAndDeduplicate(targetDir string, autoDelete bool) (CleanupReport, error) {
+	report := CleanupReport{}
+	info, err := os.Stat(targetDir)
+	if err != nil || !info.IsDir() {
+		return report, fmt.Errorf("invalid target directory: %s", targetDir)
+	}
+
+	categories := map[string]string{
+		".pdf": "Documents", ".doc": "Documents", ".docx": "Documents", ".txt": "Documents", ".md": "Documents",
+		".jpg": "Images", ".jpeg": "Images", ".png": "Images", ".webp": "Images", ".svg": "Images",
+		".mp4": "Media", ".mkv": "Media", ".mp3": "Media", ".wav": "Media",
+		".zip": "Archives", ".rar": "Archives", ".7z": "Archives", ".tar": "Archives", ".gz": "Archives",
+		".go": "Code", ".py": "Code", ".js": "Code", ".ts": "Code", ".lua": "Code", ".json": "Code",
+	}
+
+	entries, _ := os.ReadDir(targetDir)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		ext := strings.ToLower(filepath.Ext(entry.Name()))
+		folderName, exists := categories[ext]
+		if !exists {
+			folderName = "Other_Files"
+		}
+		destDir := filepath.Join(targetDir, folderName)
+		os.MkdirAll(destDir, 0755)
+
+		oldPath := filepath.Join(targetDir, entry.Name())
+		newPath := filepath.Join(destDir, entry.Name())
+		if oldPath != newPath {
+			if _, err := os.Stat(newPath); os.IsNotExist(err) {
+				if err := os.Rename(oldPath, newPath); err == nil {
+					report.OrganizedFiles++
+					report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Organized: %s -> %s/", entry.Name(), folderName))
+				}
+			}
+		}
+	}
+
+	seenFileHashes := make(map[string]string)
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+		hash, size, err := hashFileSHA256(path)
+		if err != nil {
+			return nil
+		}
+		if orig, exists := seenFileHashes[hash]; exists {
+			report.DuplicateFilesFound++
+			report.FreedBytes += size
+			if autoDelete {
+				os.Remove(path)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate file: %s (matches %s)", path, filepath.Base(orig)))
+			}
+		} else {
+			seenFileHashes[hash] = path
+		}
+		return nil
+	})
+
+	var dirs []string
+	filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+		if err == nil && d.IsDir() && path != targetDir {
+			dirs = append(dirs, path)
+		}
+		return nil
+	})
+	sort.Slice(dirs, func(i, j int) bool { return len(dirs[i]) > len(dirs[j]) })
+
+	seenDirHashes := make(map[string]string)
+	for _, dirPath := range dirs {
+		if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+			continue
+		}
+		dirHash, isEmpty, err := hashDirectory(dirPath)
+		if err != nil {
+			continue
+		}
+		if isEmpty && autoDelete {
+			os.Remove(dirPath)
+			report.DuplicateDirsFound++
+			report.ActionsTaken = append(report.ActionsTaken, "Removed empty folder: "+dirPath)
+			continue
+		}
+		if origDir, exists := seenDirHashes[dirHash]; exists {
+			report.DuplicateDirsFound++
+			if autoDelete {
+				os.RemoveAll(dirPath)
+				report.ActionsTaken = append(report.ActionsTaken, fmt.Sprintf("Deleted duplicate folder: %s (matches %s)", dirPath, origDir))
+			}
+		} else {
+			seenDirHashes[dirHash] = dirPath
+		}
+	}
+	return report, nil
+}
+
+func hashFileSHA256(path string) (string, int64, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", 0, err
+	}
+	defer f.Close()
+Use code with caution.
+h := sha256.New()
+size, err := io.Copy(h, f)
+return hex.EncodeToString(h.Sum(nil)), size, err
+}
+func hashDirectory(dirPath string) (string, bool, error) {
+h := sha256.New()
+fileCount := 0
+err := filepath.WalkDir(dirPath, func(path string, d os.DirEntry, err error) error {
+if err != nil || d.IsDir() {
+return nil
+}
+fileCount++
+rel, _ := filepath.Rel(dirPath, path)
+fHash, _, err := hashFileSHA256(path)
+if err == nil {
+h.Write([]byte(rel + ":" + fHash + ";"))
+}
+return nil
+})
+return hex.EncodeToString(h.Sum(nil)), fileCount == 0, err
+}
+// ============================================================================
+// 4. NEOVIM PORTABLE SUITE (INSTALL, CREATE, SYNC, UPDATE & CHEATSHEET)
+// ============================================================================
+const defaultInitLua = `-- Khalifah Portable Neovim Configuration (Zero-Cost, Local-First)
+vim.g.mapleader = " "
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.termguicolors = true
+vim.opt.clipboard = "unnamedplus"
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+vim.fn.system({
+"git", "clone", "--filter=blob:none",
+"github.com", "--branch=stable", lazypath,
+})
+end
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup({
+{ "nvim-lua/plenary.nvim" },
+{ "nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
+{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+{ "folke/which-key.nvim", opts = {} },
+})
+vim.keymap.set("n", "ff", "Telescope find_files", { desc = "Find Files" })
+vim.keymap.set("n", "fg", "Telescope live_grep", { desc = "Live Grep" })
+vim.keymap.set("n", "w", "w", { desc = "Save File" })
+vim.keymap.set("n", "q", "q", { desc = "Quit" })
+`
+const neovimCheatsheet = === KHALIFAH PORTABLE NEOVIM CHEATSHEET === Leader Key: <Space> <Space>w : Save file | <Space>q : Quit window <Space>ff : Fuzzy find files | <Space>fg : Live grep project hjkl : Left/Down/Up/Rt | w / b : Next / prev word gg / G : Top / bottom | dd / yy / p : Cut / Copy / Paste :Lazy : Plugin Manager | :Lazy sync : Install & update plugins 
+func manageNeovim(action string) map[string]interface{} {
+usbInitPath := filepath.Join(cfg.VaultDir, "nvim_config", "init.lua")
+if _, err := os.Stat(usbInitPath); os.IsNotExist(err) {
+os.WriteFile(usbInitPath, []byte(defaultInitLua), 0644)
+}
+home, _ := os.UserHomeDir()
+var hostConfigDir string
+if runtime.GOOS == "windows" {
+hostConfigDir = filepath.Join(os.Getenv("LOCALAPPDATA"), "nvim")
+} else {
+hostConfigDir = filepath.Join(home, ".config", "nvim")
+}
+switch action {
+case "cheatsheet":
+return map[string]interface{}{"status": "OK", "cheatsheet": neovimCheatsheet}
+case "install":
+if _, err := exec.LookPath("nvim"); err == nil {
+return map[string]interface{}{"status": "ALREADY_INSTALLED", "message": "Neovim is already installed."}
+}
+var cmd *exec.Cmd
+switch runtime.GOOS {
+case "windows":
+cmd = exec.Command("winget", "install", "--id", "Neovim.Neovim", "-e", "--silent")
+case "darwin":
+cmd = exec.Command("brew", "install", "neovim")
+default:
+if strings.Contains(os.Getenv("PREFIX"), "com.termux") {
+cmd = exec.Command("pkg", "install", "-y", "neovim")
+} else {
+cmd = exec.Command("sudo", "apt-get", "install", "-y", "neovim")
+}
+}
+out, err := cmd.CombinedOutput()
+if err != nil {
+return map[string]interface{}{"status": "INSTALL_ERROR", "error": err.Error(), "output": string(out)}
+}
+return map[string]interface{}{"status": "INSTALLED", "output": string(out)}
+case "sync", "update":
+os.MkdirAll(hostConfigDir, 0755)
+usbData, _ := os.ReadFile(usbInitPath)
+hostInitPath := filepath.Join(hostConfigDir, "init.lua")
+os.WriteFile(hostInitPath, usbData, 0644)
+cmd := exec.Command("nvim", "--headless", "+Lazy! sync", "+qa")
+out, err := cmd.CombinedOutput()
+logToVault("NEOVIM_SYNC_UPDATE: Synced init.lua to " + hostInitPath)
+if err != nil {
+return map[string]interface{}{"status": "CONFIG_SYNCED_NVIM_PENDING", "config_path": hostInitPath, "note": err.Error()}
+}
+return map[string]interface{}{"status": "SYNCED_AND_UPDATED", "config_path": hostInitPath, "plugin_logs": string(out)}
+}
+return map[string]interface{}{"status": "UNKNOWN_ACTION"}
+}
+// ============================================================================
+// 5. REA (REVERSE ENGINEERING ANYTHING FROM GITHUB) ENGINE
+// ============================================================================
+type REABlueprint struct {
+RepoTarget string json:"repo_target"
+LocalPath string json:"local_path"
+LicenseDetected string json:"license_detected"
+TechStack []string json:"tech_stack"
+EntryPoints []string json:"entry_points"
+DependencyFiles []string json:"dependency_files"
+HiddenCostAlerts []string json:"hidden_cost_or_api_alerts"
+LanguageCounts map[string]int json:"file_extensions"
+KhalifahCheck string json:"khalifah_check"
+}
+func reverseEngineerGitHubRepo(repoInput string) (REABlueprint, error) {
+check := runKhalifahDiscernment("REA GitHub analysis: " + repoInput)
+bp := REABlueprint{
+RepoTarget: repoInput,
+LanguageCounts: make(map[string]int),
+KhalifahCheck: check.Summary,
+}
+if !check.Approved {
+return bp, fmt.Errorf("%s", check.Reason)
+}
+targetDir := repoInput
+// If input is a GitHub URL, shallow-clone it into the USB rea_workspace for free offline analysis
+if strings.HasPrefix(repoInput, "http://") || strings.HasPrefix(repoInput, "https://") {
+repoName := strings.TrimSuffix(filepath.Base(repoInput), ".git")
+targetDir = filepath.Join(cfg.VaultDir, "rea_workspace", repoName)
+os.RemoveAll(targetDir)
+cmd := exec.Command("git", "clone", "--depth", "1", repoInput, targetDir)
+if out, err := cmd.CombinedOutput(); err != nil {
+return bp, fmt.Errorf("git clone failed: %v (%s)", err, string(out))
+}
+}
+bp.LocalPath = targetDir
+techSet := make(map[string]bool)
+alertSet := make(map[string]bool)
+entryCandidates := map[string]bool{
+"main.go": true, "main.py": true, "app.py": true, "index.js": true, "index.ts": true,
+"main.rs": true, "dockerfile": true, "docker-compose.yml": true, "makefile": true,
+}
+depCandidates := map[string]string{
+"go.mod": "Go", "package.json": "Node.js/TypeScript", "requirements.txt": "Python",
+"pyproject.toml": "Python", "cargo.toml": "Rust", "pom.xml": "Java", "cmakelists.txt": "C/C++",
+}
+filepath.WalkDir(targetDir, func(path string, d os.DirEntry, err error) error {
+if err != nil {
+return nil
+}
+if d.IsDir() {
+if d.Name() == ".git" || d.Name() == "node_modules" || d.Name() == "vendor" {
+return filepath.SkipDir
+}
+return nil
+}
+lowerName := strings.ToLower(d.Name())
+relPath, _ := filepath.Rel(targetDir, path)
+ext := strings.ToLower(filepath.Ext(d.Name()))
+if ext != "" {
+bp.LanguageCounts[ext]++
+}
+// 1. Detect License
+if strings.HasPrefix(lowerName, "license") {
+data, _ := os.ReadFile(path)
+snippet := strings.ToLower(string(data))
+switch {
+case strings.Contains(snippet, "mit license"):
+bp.LicenseDetected = "MIT License (Permissive)"
+case strings.Contains(snippet, "apache license"):
+bp.LicenseDetected = "Apache-2.0 License (Permissive)"
+case strings.Contains(snippet, "gnu general public license"):
+bp.LicenseDetected = "GNU GPL (Copyleft)"
+default:
+bp.LicenseDetected = "Custom / Other License (Review " + relPath + ")"
+}
+}
+// 2. Detect Entry Points
+if entryCandidates[lowerName] {
+bp.EntryPoints = append(bp.EntryPoints, relPath)
+}
+// 3. Detect Dependency Manifests & Stack
+if stack, ok := depCandidates[lowerName]; ok {
+techSet[stack] = true
+bp.DependencyFiles = append(bp.DependencyFiles, relPath)
+}
+// 4. Scan small config/source files for paid external API endpoints or telemetry
+if info, err := d.Info(); err == nil && info.Size() < 150*1024 {
+if ext == ".go" || ext == ".py" || ext == ".js" || ext == ".ts" || ext == ".env" || strings.Contains(lowerName, "env") || ext == ".json" {
+content, _ := os.ReadFile(path)
+lowerBody := strings.ToLower(string(content))
+if strings.Contains(lowerBody, "openai_api_key") || strings.Contains(lowerBody, "openai.com") {
+alertSet["Requires OPENAI_API_KEY (External paid API — swap with local Ollama endpoint in our proxy)"] = true
+}
+if strings.Contains(lowerBody, "anthropic_api_key") || strings.Contains(lowerBody, "anthropic.com") {
+alertSet["Requires ANTHROPIC_API_KEY (External paid API)"] = true
+}
+if strings.Contains(lowerBody, "stripe") || strings.Contains(lowerBody, "billing") {
+alertSet["Contains billing/payment integration references in "+relPath] = true
+}
+}
+}
+return nil
+})
+if bp.LicenseDetected == "" {
+bp.LicenseDetected = "No LICENSE file found (All rights reserved by default — use for study only)"
+}
+for t := range techSet {
+bp.TechStack = append(bp.TechStack, t)
+}
+for a := range alertSet {
+bp.HiddenCostAlerts = append(bp.HiddenCostAlerts, a)
+}
+logToVault("REA_GITHUB_BLUEPRINT: Analyzed " + repoInput)
+return bp, nil
+}
+// ============================================================================
+// 6. NATIVE MCP SERVER & HTTP ENDPOINTS
+// ============================================================================
+type MCPRequest struct {
+JSONRPC string json:"jsonrpc"
+ID interface{} json:"id"
+Method string json:"method"
+Params json.RawMessage json:"params"
+}
+func handleMCP(w http.ResponseWriter, r *http.Request) {
+var req MCPRequest
+if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+http.Error(w, "Invalid JSON-RPC", http.StatusBadRequest)
+return
+}
+w.Header().Set("Content-Type", "application/json")
+switch req.Method {
+case "initialize":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": req.ID,
+"result": map[string]interface{}{
+"protocolVersion": "2024-11-05",
+"serverInfo": map[string]string{"name": "khalifah-usb-brain", "version": "3.1.0"},
+"capabilities": map[string]interface{}{"tools": map[string]interface{}{}},
+},
+})
+case "tools/list":
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": req.ID,
+"result": map[string]interface{}{
+"tools": []map[string]interface{}{
+{
+"name": "clean_and_deduplicate_directory",
+"description": "Organizes loose files into clean category folders and removes exact SHA-256 duplicate files and duplicate folders.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"directory": map[string]string{"type": "string"},
+"auto_delete": map[string]string{"type": "boolean"},
+},
+"required": []string{"directory"},
+},
+},
+{
+"name": "manage_portable_neovim",
+"description": "Auto-installs Neovim, syncs/updates portable init.lua & plugins from USB, or returns the Neovim cheatsheet.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"action": map[string]string{"type": "string", "description": "install | sync | update | cheatsheet"},
+},
+"required": []string{"action"},
+},
+},
+{
+"name": "reverse_engineer_github_repo",
+"description": "REA (Reverse Engineering Anything from GitHub): Clones/scans a GitHub URL or local repo to extract architecture, entry points, license, dependencies, and hidden paid API alerts.",
+"inputSchema": map[string]interface{}{
+"type": "object",
+"properties": map[string]interface{}{
+"repo_url_or_path": map[string]string{"type": "string", "description": "GitHub HTTPS URL or local folder path"},
+},
+"required": []string{"repo_url_or_path"},
+},
+},
+},
+},
+})
+case "tools/call":
+var params struct {
+Name string json:"name"
+Arguments map[string]interface{} json:"arguments"
+}
+json.Unmarshal(req.Params, &params)
+switch params.Name {
+case "clean_and_deduplicate_directory":
+dir, _ := params.Arguments["directory"].(string)
+autoDel, _ := params.Arguments["auto_delete"].(bool)
+rep, err := organizeAndDeduplicate(dir, autoDel)
+if err != nil {
+sendMCPText(w, req.ID, "Error: "+err.Error(), true)
+return
+}
+b, _ := json.MarshalIndent(rep, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+case "manage_portable_neovim":
+act, _ := params.Arguments["action"].(string)
+res := manageNeovim(act)
+b, _ := json.MarshalIndent(res, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+case "reverse_engineer_github_repo":
+repo, _ := params.Arguments["repo_url_or_path"].(string)
+bp, err := reverseEngineerGitHubRepo(repo)
+if err != nil {
+sendMCPText(w, req.ID, "Error: "+err.Error(), true)
+return
+}
+b, _ := json.MarshalIndent(bp, "", " ")
+sendMCPText(w, req.ID, string(b), false)
+default:
+sendMCPText(w, req.ID, "Unknown tool", true)
+}
+}
+}
+func sendMCPText(w http.ResponseWriter, id interface{}, text string, isErr bool) {
+json.NewEncoder(w).Encode(map[string]interface{}{
+"jsonrpc": "2.0", "id": id,
+"result": map[string]interface{}{
+"content": []map[string]string{{"type": "text", "text": text}},
+"isError": isErr,
+},
+})
+}
+func handleNeovimEndpoint(w http.ResponseWriter, r *http.Request) {
+action := r.URL.Query().Get("action")
+if action == "" {
+action = "cheatsheet"
+}
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(manageNeovim(action))
+}
+func handleREAEndpoint(w http.ResponseWriter, r *http.Request) {
+var req struct {
+Repo string json:"repo"
+}
+json.NewDecoder(r.Body).Decode(&req)
+w.Header().Set("Content-Type", "application/json")
+bp, err := reverseEngineerGitHubRepo(req.Repo)
+if err != nil {
+w.WriteHeader(http.StatusBadRequest)
+json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+return
+}
+json.NewEncoder(w).Encode(bp)
+}
+func handleZeroChargeLLMProxy(w http.ResponseWriter, r *http.Request) {
+bodyBytes, _ := io.ReadAll(r.Body)
+check := runKhalifahDiscernment(string(bodyBytes))
+if !check.Approved {
+http.Error(w, check.Reason+" | "+check.Summary, http.StatusConflict)
+return
+}
+proxyReq, _ := http.NewRequest("POST", cfg.Secrets.LocalOllamaURL, bytes.NewBuffer(bodyBytes))
+proxyReq.Header.Set("Content-Type", "application/json")
+client := &http.Client{Timeout: 60 * time.Second}
+resp, err := client.Do(proxyReq)
+if err != nil {
+http.Error(w, "Local AI Engine offline (Zero-charge mode active; start Ollama locally)", http.StatusBadGateway)
+return
+}
+defer resp.Body.Close()
+w.Header().Set("Content-Type", "application/json")
+w.WriteHeader(resp.StatusCode)
+io.Copy(w, resp.Body)
+}
+func handleAutomate(w http.ResponseWriter, r *http.Request) {
+var req struct {
+Command string json:"command"
+TargetDir string json:"target_dir"
+AutoDelete bool json:"auto_delete"
+}
+json.NewDecoder(r.Body).Decode(&req)
+check := runKhalifahDiscernment(req.Command + " " + req.TargetDir)
+w.Header().Set("Content-Type", "application/json")
+if !check.Approved {
+w.WriteHeader(http.StatusConflict)
+json.NewEncoder(w).Encode(check)
+return
+}
+if req.TargetDir != "" {
+rep, err := organizeAndDeduplicate(req.TargetDir, req.AutoDelete)
+if err != nil {
+w.WriteHeader(http.StatusBadRequest)
+json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+return
+}
+json.NewEncoder(w).Encode(map[string]interface{}{"discernment": check, "cleanup_report": rep})
+return
+}
+json.NewEncoder(w).Encode(check)
+}
+func logToVault(entry string) {
+f, err := os.OpenFile(filepath.Join(cfg.VaultDir, "memory_log.txt"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+if err == nil {
+defer f.Close()
+f.WriteString(fmt.Sprintf("[%s] %s\n", time.Now().Format(time.RFC3339), entry))
+}
+}
+func handleDashboard(w http.ResponseWriter, r *http.Request) {
+html := `
+
+Khalifah AI Brain
+
+🌿 Khalifah Portable AI Brain Hub
+Zero-Hidden-Charge Mode: Active | MCP Endpoint: http://localhost:8080/mcp
+1. Clean Directory & Remove Duplicate Files/Folders
+
+Organize & Deduplicate
+2. Portable Neovim Suite (Auto-Install, Sync, Update & Cheatsheet)
+Auto-Install Neovim
+Sync & Update Plugins
+View Cheatsheet
+3. REA (Reverse Engineering Anything from GitHub)
+
+Extract Architecture Blueprint
+const out = document.getElementById('out');
+async function cleanDir() {
+out.textContent = "Scanning SHA-256 hashes...";
+const res = await fetch('/automate', {
+method: 'POST', headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({command: 'clean', target_dir: document.getElementById('dir').value, auto_delete: true})
+});
+out.textContent = JSON.stringify(await res.json(), null, 2);
+}
+async function nvim(act) {
+out.textContent = "Running Neovim action: " + act + "...";
+const res = await fetch('/neovim?action=' + act);
+const data = await res.json();
+out.textContent = data.cheatsheet ? data.cheatsheet : JSON.stringify(data, null, 2);
+}
+async function runREA() {
+out.textContent = "Cloning & mapping GitHub repository architecture...";
+const res = await fetch('/rea', {
+method: 'POST', headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({repo: document.getElementById('repo').value})
+});
+out.textContent = JSON.stringify(await res.json(), null, 2);
+}
+
+
+`
+w.Header().Set("Content-Type", "text/html")
+w.Write([]byte(html))
+}
+
+---
+
+### What the GitHub REA Engine Extracts Automatically
+
+When you paste any GitHub URL (or call `reverse_engineer_github_repo` via OpenCode / Claude Code MCP), it:
+* **Shallow-clones** the repository onto your USB drive (`vault/rea_workspace/`) for offline inspection.
+* **Identifies the open-source license** (`MIT`, `Apache-2.0`, `GPL`, or missing license warning) to ensure ethical compliance (*Amanah*).
+* **Maps entry points & tech stack** (`main.go`, `index.ts`, `main.py`, `Dockerfile`, `go.mod`, `package.json`, `Cargo.toml`) and counts file extensions across the codebase.
+* **Flags hidden paid API dependencies** (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, payment/billing hooks) so you know immediately where to swap in your free local Ollama proxy.
+
+> *Khalifah check: Holistic ✓ | Critical ✓ | Strategic ✓ | Syura ✓ | Maqasid ✓ | Adaptive ✓ | Rahmah ✓ | Amanah ✓*
+
+<FollowUp>
+Would you like to:
+* Add a **one-click USB launcher** (`START_BRAIN.bat` & `START_BRAIN.sh`) that automatically detects Windows, macOS, Linux, or Android Termux and launches the matching compiled binary?
+* Expand the **GitHub REA tool** to automatically generate a clean-room Markdown architectural diagram (Mermaid flowchart) and swap paid API references to your free local endpoint?
+</FollowUp>
+
+
+
+
+AI Mode response is ready

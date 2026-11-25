@@ -1,0 +1,178 @@
+Your setup is quite specific: Redmi 13C (ARM64, limited memory), OpenCode running in Termux, and a portable AI brain on a USB drive. The good news is that quantization and memory/reflection can both be implemented on-device, but you need to avoid the "compile from source" path because your phone cannot handle heavy compilation well.
+
+Here is a practical plan.
+
+Quantization Skill: Use Prebuilt Tools, Avoid Compilation
+
+Your Redmi 13C has limited RAM and CPU. Compiling llama.cpp from source on-device is slow and error-prone. Use termux-llamacpp, which ships prebuilt ARM64 binaries specifically for Termux and requires zero compilation.
+
+Step 1: Install the runtime
+
+```bash
+pip install termux-llamacpp
+termux-llama install
+```
+
+This gives you llama-cli and llama-server binaries ready to run on Android ARM64.
+
+Step 2: Write the SKILL.md for OpenCode
+
+OpenCode skills live in ~/.config/opencode/skills/<name>/SKILL.md. Create a quantization skill:
+
+```bash
+mkdir -p ~/.config/opencode/skills/quantize-model
+```
+
+Put this in SKILL.md:
+
+```yaml
+---
+name: quantize-model
+description: Quantize a HuggingFace model to GGUF format using prebuilt llama.cpp tools on Termux. Use when user asks to quantize, compress, or shrink a model for mobile inference.
+---
+
+## Trigger Conditions
+- User asks to quantize a model
+- User wants to convert a model to GGUF for Termux
+
+## Execution
+
+### 1. Check prerequisites
+- Verify `termux-llama` is installed: `which termux-llama`
+- If not, run: `pip install termux-llamacpp && termux-llama install`
+
+### 2. Download or locate the source model
+- If user provides a HuggingFace repo, download the GGUF file directly if available:
+  `termux-llama download <repo>/<filename>.gguf`
+- If the model is in PyTorch format, warn that on-device conversion is not supported; recommend downloading a pre-quantized GGUF instead.
+
+### 3. Run quantization (only if source is f16/f32 GGUF)
+- Use llama-quantize from termux-llamacpp:
+  `llama-quantize input-f16.gguf output-q4_k_m.gguf Q4_K_M`
+
+### 4. Verify output
+- Check file size is reasonable (Q4_K_M should be ~25-30% of f16)
+- Run a quick test: `llama-cli -m output.gguf -p "Hello" -n 16`
+- Report success or failure
+
+## Constraints
+- Do NOT attempt to compile llama.cpp from source on this device
+- Prefer Q4_K_M quantization for mobile (best size/quality tradeoff)
+- If model exceeds 4GB, warn about Redmi 13C memory limits
+```
+
+This skill tells OpenCode exactly what to do without needing to figure it out each time.
+
+Memory and Reflection Loop
+
+You already have the conceptual design from our earlier discussion. Now implement it on the portable brain.
+
+Option A: Use an existing OpenCode plugin (fastest)
+
+There are OpenCode memory plugins that handle this automatically. One lightweight option is @zhafron/opencode-memory-md, which creates markdown files for memory and identity, auto-injected at session start. Add to ~/.config/opencode/opencode.json:
+
+```json
+{
+  "plugin": ["@zhafron/opencode-memory-md"]
+}
+```
+
+This gives you MEMORY.md and USER.md that persist across sessions. It's simple but does not include automated reflection.
+
+Option B: Build your own reflection loop (more control)
+
+Since you already built the brain system, here is the minimal implementation:
+
+1. Memory storage (SQLite on the USB drive):
+
+```bash
+# In your brain's directory on USB
+mkdir -p data
+sqlite3 data/memory.db "CREATE TABLE IF NOT EXISTS lessons (
+  id INTEGER PRIMARY KEY,
+  domain TEXT,
+  lesson TEXT,
+  trigger_condition TEXT,
+  confidence REAL,
+  times_used INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);"
+```
+
+2. After-session reflection script (Python, run by your brain):
+
+```python
+# reflect.py
+import sqlite3, json, subprocess
+
+def reflect(task_desc, outcome, trace_summary):
+    prompt = f"""Analyze this task execution. Extract at most 2 actionable lessons.
+
+Task: {task_desc}
+Outcome: {outcome}
+Trace: {trace_summary}
+
+Format each lesson as: "When [situation], do [action] because [reason]."
+Output JSON list: [{{"domain": "...", "lesson": "...", "trigger": "...", "confidence": 0.0-1.0}}]
+If nothing generalizable, output [].
+"""
+    # Call your local model via termux-llama server
+    result = subprocess.run([
+        "curl", "-s", "http://127.0.0.1:8080/v1/chat/completions",
+        "-H", "Content-Type: application/json",
+        "-d", json.dumps({
+            "model": "local",
+            "messages": [{"role": "user", "content": prompt}]
+        })
+    ], capture_output=True, text=True)
+    
+    lessons = json.loads(result.stdout)["choices"][0]["message"]["content"]
+    conn = sqlite3.connect("data/memory.db")
+    for l in json.loads(lessons):
+        conn.execute(
+            "INSERT INTO lessons (domain, lesson, trigger_condition, confidence) VALUES (?,?,?,?)",
+            (l["domain"], l["lesson"], l["trigger"], l["confidence"])
+        )
+    conn.commit()
+    conn.close()
+```
+
+3. Before-session injection (retrieve matching lessons):
+
+```python
+# inject.py
+import sqlite3
+
+def get_lessons(domain, task_desc, limit=3):
+    conn = sqlite3.connect("data/memory.db")
+    # Simple: match by domain, order by confidence
+    rows = conn.execute(
+        "SELECT lesson FROM lessons WHERE domain=? AND confidence > 0.5 ORDER BY confidence DESC LIMIT ?",
+        (domain, limit)
+    ).fetchall()
+    conn.close()
+    return [r[0] for r in rows]
+```
+
+Prepend these lessons to OpenCode's system prompt or as context before the task starts.
+
+4. Consolidation (run weekly):
+
+Delete lessons with times_used > 5 AND success_after_use = 0. Merge duplicates manually or via a simple script.
+
+Critical Constraints for Your Device
+
+Redmi 13C memory: Do not try to run or quantize models larger than 3B parameters. Q4_K_M of a 3B model is about 2GB, which is already tight. Your brain's model should stay at 1B-3B range.
+
+USB drive performance: If the USB drive is USB 2.0, loading models from it will be extremely slow. Keep the model file on internal storage if possible, and only the brain logic/data on USB.
+
+OpenCode MCP: Your MCP launcher auto-detects OpenCode. The skill system does not need MCP—it is natively supported by OpenCode via SKILL.md files. So the quantization skill above will work without touching your MCP setup.
+
+What to Do Next
+
+1. Install termux-llamacpp and verify llama-cli runs.
+2. Create the skill directory and SKILL.md as shown.
+3. Test by asking OpenCode: "Quantize this model" and see if it loads your skill.
+4. For memory: start with Option A (the plugin) to get persistence working, then layer your reflection script on top when you are ready.
+
+The key insight: do not build what already exists. termux-llamacpp handles the hard part of getting llama.cpp working on Android. Your job is just wrapping it in a skill and wiring the memory loop.
