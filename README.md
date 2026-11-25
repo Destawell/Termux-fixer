@@ -40,6 +40,46 @@ chmod +x fix.sh
 ./fix.sh
 ```
 
+## 📊 Status
+
+| Item | Value |
+| --- | --- |
+| Version | 2.2.0 |
+| Branch | `main` |
+| Repository visibility | Public |
+| Fixer script | `fix.sh` (executable) |
+| Bundled APK | `downloads/ShellStudio-dplug.apk` |
+
+Latest changes are published to `main`; see `CHANGELOG.md` for the version history.
+
+## 📦 Bundled APK (ShellStudio dPlug)
+
+The dPlug APK is included in `downloads/` so it can be installed without a
+separate release asset.
+
+- **File:** `downloads/ShellStudio-dplug.apk`
+- **Size:** ~833 KB
+- **SHA-256:** `9f13d64ce378b965d0427099906af0f70c9e6980b83007c04d287a4244dee23c`
+- **Direct download:** `https://raw.githubusercontent.com/8otak120-code/Termux-fixer/main/downloads/ShellStudio-dplug.apk`
+
+### Install from Termux (adb)
+
+```bash
+pkg update -y && pkg install android-tools -y
+
+curl -L -o ShellStudio-dplug.apk \
+  https://raw.githubusercontent.com/8otak120-code/Termux-fixer/main/downloads/ShellStudio-dplug.apk
+
+sha256sum ShellStudio-dplug.apk   # must match the value above
+adb install -r ShellStudio-dplug.apk
+```
+
+### Install from Android
+
+Open the APK from a file manager and allow **Install unknown apps** for that
+file manager when Android asks. Verify the SHA-256 before installing if you
+downloaded the file from elsewhere.
+
 ## 🧰 CLI usage
 
 ```bash
